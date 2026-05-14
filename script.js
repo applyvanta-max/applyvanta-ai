@@ -148,6 +148,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  let supabaseClientPromise = null;
+
+  const setStatusText = (node, message) => {
+    if (node) node.textContent = message || "";
+  };
+
+  const loadSupabaseScript = () =>
+    new Promise((resolve, reject) => {
+      if (window.supabase?.createClient) {
+        resolve();
+        return;
+      }
+
+      const existing = document.querySelector("script[data-supabase-js]");
+      if (existing) {
+        existing.addEventListener("load", resolve, { once: true });
+        existing.addEventListener("error", reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      script.async = true;
+      script.dataset.supabaseJs = "true";
+      script.onload = resolve;
+      script.onerror = () => reject(new Error("Could not load Supabase in this browser."));
+      document.head.append(script);
+    });
+
+  const getSupabaseClient = async () => {
+    if (supabaseClientPromise) return supabaseClientPromise;
+
+    supabaseClientPromise = (async () => {
+      try {
+        const response = await fetch("/api/config", { cache: "no-store" });
+        if (!response.ok) return null;
+        const config = await response.json();
+        if (!config.supabaseUrl || !config.supabaseAnonKey) return null;
+        await loadSupabaseScript();
+        return window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+      } catch {
+        return null;
+      }
+    })();
+
+    return supabaseClientPromise;
+  };
+
+  const getSupabaseUser = async () => {
+    const client = await getSupabaseClient();
+    if (!client) return { client: null, user: null };
+    const { data } = await client.auth.getUser();
+    return { client, user: data?.user || null };
+  };
+
+  const safeStorageName = (name) =>
+    String(name || "resume")
+      .replace(/[^a-z0-9._-]/gi, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 140);
+
   const escapeHtml = (value) =>
     String(value)
       .replace(/&/g, "&amp;")
@@ -170,19 +231,126 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   const accountForm = document.querySelector("#accountForm");
-  accountForm?.addEventListener("submit", (event) => {
+  const accountCard = document.querySelector("#accountCard");
+  const accountDisplayName = document.querySelector("#accountDisplayName");
+  const accountDisplayEmail = document.querySelector("#accountDisplayEmail");
+  const accountAvatar = document.querySelector("#accountAvatar");
+  const accountStatus = document.querySelector("#accountStatus");
+
+  const getInitials = (nameOrEmail) => {
+    const value = String(nameOrEmail || "AV").trim();
+    const parts = value.includes("@") ? [value[0], value.split("@")[0]?.[1]] : value.split(/\s+/).map((part) => part[0]);
+    return parts.filter(Boolean).slice(0, 2).join("").toUpperCase() || "AV";
+  };
+
+  const renderAccountState = () => {
+    const profile = store.get("applyvanta.profile");
+    if (!accountForm || !accountCard) return;
+
+    if (!profile?.email) {
+      accountForm.hidden = false;
+      accountCard.hidden = true;
+      return;
+    }
+
+    accountForm.hidden = true;
+    accountCard.hidden = false;
+    if (accountDisplayName) accountDisplayName.textContent = profile.name || "ApplyVanta user";
+    if (accountDisplayEmail) accountDisplayEmail.textContent = profile.email;
+    if (accountAvatar) accountAvatar.textContent = getInitials(profile.name || profile.email);
+    if (accountStatus) accountStatus.textContent = "";
+  };
+
+  renderAccountState();
+
+  const hydrateSupabaseAccount = async () => {
+    const { client, user } = await getSupabaseUser();
+    if (!client || !user?.email) return;
+
+    let fullName = user.user_metadata?.full_name || "";
+    const { data: profile } = await client.from("profiles").select("full_name,email").eq("id", user.id).maybeSingle();
+    fullName = profile?.full_name || fullName;
+
+    store.set("applyvanta.profile", {
+      id: user.id,
+      email: profile?.email || user.email,
+      name: fullName || user.email.split("@")[0],
+      provider: "supabase",
+      createdAt: user.created_at || new Date().toISOString()
+    });
+    renderAccountState();
+  };
+
+  hydrateSupabaseAccount();
+
+  accountForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const profile = {
-      email: document.querySelector("#accountEmail")?.value.trim(),
-      name: document.querySelector("#accountName")?.value.trim(),
-      createdAt: new Date().toISOString()
-    };
-    store.set("applyvanta.profile", profile);
-    const status = document.querySelector("#accountStatus");
-    if (status) status.textContent = "Account created. Opening setup...";
-    setTimeout(() => {
-      window.location.href = "demo.html#demo-room";
-    }, 500);
+    const email = document.querySelector("#accountEmail")?.value.trim();
+    const name = document.querySelector("#accountName")?.value.trim();
+    const password = document.querySelector("#accountPassword")?.value || "";
+    if (!email || !name) return;
+
+    setStatusText(accountStatus, "Creating your account...");
+
+    try {
+      const client = await getSupabaseClient();
+      if (client) {
+        if (password.length < 6) {
+          setStatusText(accountStatus, "Password must be at least 6 characters.");
+          return;
+        }
+
+        let authResult = await client.auth.signUp({
+          email,
+          password,
+          options: { data: { full_name: name } }
+        });
+
+        if (authResult.error && /already|registered|exists/i.test(authResult.error.message)) {
+          authResult = await client.auth.signInWithPassword({ email, password });
+        }
+
+        if (authResult.error) throw authResult.error;
+
+        const user = authResult.data?.user || (await client.auth.getUser()).data?.user;
+        if (user?.id) {
+          await client.from("profiles").upsert({
+            id: user.id,
+            email,
+            full_name: name
+          });
+        }
+
+        store.set("applyvanta.profile", {
+          id: user?.id,
+          email,
+          name,
+          provider: "supabase",
+          createdAt: user?.created_at || new Date().toISOString()
+        });
+      } else {
+        store.set("applyvanta.profile", {
+          email,
+          name,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      renderAccountState();
+      setStatusText(accountStatus, "Account ready. Opening setup...");
+      setTimeout(() => {
+        window.location.href = "demo.html#demo-room";
+      }, 900);
+    } catch (error) {
+      setStatusText(accountStatus, error.message || "Could not create the account yet.");
+    }
+  });
+
+  document.querySelector("#signOutButton")?.addEventListener("click", async () => {
+    const client = await getSupabaseClient();
+    await client?.auth.signOut();
+    store.remove("applyvanta.profile");
+    renderAccountState();
   });
 
   const practiceForm = document.querySelector("#practiceSetupForm");
@@ -197,38 +365,118 @@ document.addEventListener("DOMContentLoaded", () => {
     savedResumePanel.hidden = !resume;
     if (!resume) return;
     savedResumeName.textContent = resume.name;
-    savedResumeMeta.textContent = `${resume.type || "resume"} - ${Math.ceil((resume.size || 0) / 1024)} KB - saved ${new Date(resume.savedAt).toLocaleDateString()}`;
+    const location = resume.provider === "supabase" ? "saved to account" : "saved in this browser";
+    savedResumeMeta.textContent = `${resume.type || "resume"} - ${Math.ceil((resume.size || 0) / 1024)} KB - ${location} - ${new Date(resume.savedAt).toLocaleDateString()}`;
   };
 
   refreshSavedResume();
 
+  const hydrateSupabaseResume = async () => {
+    const { client, user } = await getSupabaseUser();
+    if (!client || !user) return;
+    const { data } = await client
+      .from("resumes")
+      .select("id,file_name,file_path,file_size,mime_type,created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!data) return;
+    store.set("applyvanta.resume", {
+      id: data.id,
+      name: data.file_name,
+      path: data.file_path,
+      type: data.mime_type || "resume",
+      size: data.file_size || 0,
+      savedAt: data.created_at,
+      provider: "supabase"
+    });
+    refreshSavedResume();
+  };
+
+  hydrateSupabaseResume();
+
   resumeInput?.addEventListener("change", async () => {
     const file = resumeInput.files?.[0];
     if (!file) return;
-    if (file.size > 2_500_000) {
-      const status = document.querySelector("#practiceSetupStatus");
-      if (status) status.textContent = "Resume is too large for browser storage. Please upload a file under 2.5 MB for this MVP.";
-      resumeInput.value = "";
-      return;
+    const status = document.querySelector("#practiceSetupStatus");
+    setStatusText(status, "Saving resume...");
+
+    try {
+      const { client, user } = await getSupabaseUser();
+      if (client && user) {
+        const path = `${user.id}/${Date.now()}-${safeStorageName(file.name)}`;
+        const upload = await client.storage.from("resumes").upload(path, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: false
+        });
+        if (upload.error) throw upload.error;
+
+        const { data, error } = await client
+          .from("resumes")
+          .insert({
+            user_id: user.id,
+            file_name: file.name,
+            file_path: path,
+            file_size: file.size,
+            mime_type: file.type || "resume"
+          })
+          .select("id,file_name,file_path,file_size,mime_type,created_at")
+          .single();
+        if (error) throw error;
+
+        store.set("applyvanta.resume", {
+          id: data.id,
+          name: data.file_name,
+          path: data.file_path,
+          type: data.mime_type || "resume",
+          size: data.file_size || 0,
+          savedAt: data.created_at,
+          provider: "supabase"
+        });
+      } else {
+        if (file.size > 2_500_000) {
+          setStatusText(status, "Resume is too large for browser-only storage. Create or sign in to an account first.");
+          resumeInput.value = "";
+          return;
+        }
+        const dataUrl = await readFileAsDataUrl(file);
+        store.set("applyvanta.resume", {
+          name: file.name,
+          type: file.type || "resume",
+          size: file.size,
+          dataUrl,
+          savedAt: new Date().toISOString()
+        });
+      }
+
+      refreshSavedResume();
+      setStatusText(status, "Resume saved.");
+    } catch (error) {
+      setStatusText(status, `${error.message || "Could not save resume."} Make sure the storage policies were added.`);
     }
-    const dataUrl = await readFileAsDataUrl(file);
-    store.set("applyvanta.resume", {
-      name: file.name,
-      type: file.type || "resume",
-      size: file.size,
-      dataUrl,
-      savedAt: new Date().toISOString()
-    });
-    refreshSavedResume();
   });
 
-  document.querySelector("#deleteResumeButton")?.addEventListener("click", () => {
+  document.querySelector("#deleteResumeButton")?.addEventListener("click", async () => {
+    const resume = store.get("applyvanta.resume");
+    const status = document.querySelector("#practiceSetupStatus");
+    try {
+      const { client } = await getSupabaseUser();
+      if (client && resume?.provider === "supabase") {
+        if (resume.path) await client.storage.from("resumes").remove([resume.path]);
+        if (resume.id) await client.from("resumes").delete().eq("id", resume.id);
+      }
+      setStatusText(status, "Resume deleted.");
+    } catch {
+      setStatusText(status, "Resume deleted locally. Remote delete can be retried later.");
+    }
     store.remove("applyvanta.resume");
     if (resumeInput) resumeInput.value = "";
     refreshSavedResume();
   });
 
-  practiceForm?.addEventListener("submit", (event) => {
+  practiceForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const setup = {
       role: document.querySelector("#targetRole")?.value.trim() || "Interview candidate",
@@ -240,9 +488,33 @@ document.addEventListener("DOMContentLoaded", () => {
       resumeName: store.get("applyvanta.resume")?.name || "",
       updatedAt: new Date().toISOString()
     };
-    store.set("applyvanta.sessionSetup", setup);
     const status = document.querySelector("#practiceSetupStatus");
-    if (status) status.textContent = "Setup saved. Opening the practice room...";
+    setStatusText(status, "Setup saved. Opening the practice room...");
+
+    try {
+      const { client, user } = await getSupabaseUser();
+      const resume = store.get("applyvanta.resume");
+      if (client && user) {
+        const { data, error } = await client
+          .from("sessions")
+          .insert({
+            user_id: user.id,
+            role: setup.role,
+            model: setup.model,
+            job_description: setup.jobDescription,
+            resume_id: resume?.provider === "supabase" ? resume.id : null
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        setup.sessionId = data.id;
+        setup.provider = "supabase";
+      }
+    } catch (error) {
+      setStatusText(status, `${error.message || "Cloud session save failed."} Opening local practice room...`);
+    }
+
+    store.set("applyvanta.sessionSetup", setup);
     setTimeout(() => {
       window.location.href = "app/pilot/session/workday-report-builder.html";
     }, 500);
@@ -281,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const transcriptThread = document.querySelector("#transcriptThread");
   const screenPreviewVideo = document.querySelector("#screenPreviewVideo");
   const documentStrip = document.querySelector("#sessionDocumentStrip");
-  const sessionSetup = store.get("applyvanta.sessionSetup", {});
+  let sessionSetup = store.get("applyvanta.sessionSetup", {});
   let recognition = null;
   let sessionStartedAt = null;
   let timerId = null;
@@ -295,7 +567,12 @@ document.addEventListener("DOMContentLoaded", () => {
     documentStrip.hidden = !resume;
     if (resume) {
       documentStrip.innerHTML = `<strong>Document uploaded</strong><span>${escapeHtml(resume.name)}</span><button type="button" data-session-delete-resume>Delete</button>`;
-      documentStrip.querySelector("[data-session-delete-resume]")?.addEventListener("click", () => {
+      documentStrip.querySelector("[data-session-delete-resume]")?.addEventListener("click", async () => {
+        const { client } = await getSupabaseUser();
+        if (client && resume.provider === "supabase") {
+          if (resume.path) await client.storage.from("resumes").remove([resume.path]);
+          if (resume.id) await client.from("resumes").delete().eq("id", resume.id);
+        }
         store.remove("applyvanta.resume");
         updateSessionTitle();
       });
@@ -347,6 +624,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) throw new Error(data.error || "Unable to generate a reply.");
       const provider = data.provider === "openai" ? `ApplyVanta.ai Coach (${data.model || "OpenAI"})` : "ApplyVanta.ai Coach (demo)";
       addAnswerMessage(data.reply, provider);
+      const { client } = await getSupabaseUser();
+      if (client && sessionSetup?.sessionId) {
+        await client
+          .from("sessions")
+          .update({
+            transcript: transcriptThread?.innerText || "",
+            coach_notes: answerThread?.innerText || ""
+          })
+          .eq("id", sessionSetup.sessionId);
+      }
     } catch (error) {
       addAnswerMessage(`I could not reach the interview backend yet. ${error.message || "Please try again."}`, "Connection issue");
     }

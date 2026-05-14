@@ -19,7 +19,9 @@ if (existsSync(envPath)) {
 }
 
 const port = Number(process.env.PORT || 3000);
-const openAiModel = process.env.OPENAI_MODEL || "gpt-5.1-mini";
+const openAiModel = process.env.OPENAI_MODEL || "gpt-4o-mini";
+const supabaseUrl = process.env.SUPABASE_URL || "";
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -181,6 +183,15 @@ const serveStatic = async (req, res) => {
 
 const server = createServer(async (req, res) => {
   try {
+    if (req.method === "GET" && req.url === "/api/config") {
+      sendJson(res, 200, {
+        supabaseUrl,
+        supabaseAnonKey,
+        hasSupabase: Boolean(supabaseUrl && supabaseAnonKey)
+      });
+      return;
+    }
+
     if (req.method === "POST" && req.url === "/api/interview/reply") {
       const body = await readRequestJson(req);
       const result = await createInterviewReply(body);
