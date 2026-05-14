@@ -105,6 +105,8 @@ const createInterviewReply = async (payload) => {
   const transcript = cleanText(payload.transcript);
   const role = cleanText(payload.role, 120) || "Workday HRIS Analyst";
   const mode = cleanText(payload.mode, 80) || "Interview coach";
+  const jobDescription = cleanText(payload.jobDescription, 2500);
+  const resumeName = cleanText(payload.resumeName, 180);
 
   if (!message) {
     return { reply: "Type or paste the interviewer's question first, then I can coach the answer.", provider: "local" };
@@ -133,6 +135,8 @@ const createInterviewReply = async (payload) => {
           content: [
             `Target role: ${role}`,
             `Mode: ${mode}`,
+            resumeName ? `Saved resume file: ${resumeName}` : "Saved resume file: none.",
+            jobDescription ? `Job description context: ${jobDescription}` : "Job description context: none.",
             transcript ? `Current transcript: ${transcript}` : "Current transcript: none yet.",
             `Question or user message: ${message}`
           ].join("\n")

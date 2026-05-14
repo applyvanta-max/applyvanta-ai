@@ -121,13 +121,14 @@
           <p>Create an account, tell ApplyVanta.ai your target role, practice live scenarios, then review a focused improvement report.</p>
           <a class="btn btn-primary" href="demo.html"><i data-lucide="user-plus"></i>Get Started Free</a>
         </div>
-        <div class="signup-preview" data-reveal>
+        <form class="signup-preview" id="accountForm" data-reveal>
           <div class="url-pill">app.applyvanta.ai</div>
-          <label>Email<input type="email" value="alex@example.com" aria-label="Email preview"></label>
-          <label>Password<input type="password" value="password" aria-label="Password preview"></label>
-          <label>Full name<input type="text" placeholder="Enter your name" aria-label="Name preview"></label>
-          <button class="btn btn-primary" type="button">Create account</button>
-        </div>
+          <label>Email<input id="accountEmail" type="email" value="" placeholder="you@example.com" required aria-label="Email"></label>
+          <label>Password<input id="accountPassword" type="password" value="" placeholder="Create a password" required aria-label="Password"></label>
+          <label>Full name<input id="accountName" type="text" placeholder="Enter your name" required aria-label="Full name"></label>
+          <button class="btn btn-primary" type="submit">Create account</button>
+          <p class="inline-status" id="accountStatus" aria-live="polite"></p>
+        </form>
         <div class="setup-steps" data-reveal>
           <article><span>01</span><h3>Create Free Account</h3><p>Sign up quickly with no credit card required.</p></article>
           <article><span>02</span><h3>Configure Profile</h3><p>Set your role, target company, experience level, and interview format.</p></article>

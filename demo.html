@@ -1,13 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Live Demo | ApplyVanta.ai</title><link rel="stylesheet" href="styles.css"></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Demo | ApplyVanta.ai</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-  <header class="site-header"><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a><nav class="nav-links"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Product</a><a href="pricing.html">Pricing</a><a class="active" href="demo.html">Live Demo</a><a href="contact.html">Contact</a></nav><div class="nav-actions"><a class="btn btn-primary" href="#demo-room"><i data-lucide="mic"></i>Try Coach Demo</a><button class="menu-toggle" type="button" aria-label="Open menu"><i data-lucide="menu"></i></button></div></div></header>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Product</a>
+        <a href="pricing.html">Pricing</a>
+        <a class="active" href="demo.html">Live Demo</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-primary" href="#demo-room"><i data-lucide="mic"></i>Try Coach Demo</a>
+        <button class="menu-toggle" type="button" aria-label="Open menu"><i data-lucide="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
   <main>
-    <section class="page-hero"><div class="container" data-reveal><span class="eyebrow"><i data-lucide="radio"></i> Live Demo</span><h1>Preview the visible interview and meeting coach.</h1><p class="lead">This static demo shows the product experience: active AI banner, transcript panel, model switcher, answer suggestions, and feedback cues.</p></div></section>
-    <section class="section soft" id="demo-room"><div class="container demo-panel"><div class="coach-preview full-preview" data-reveal><div class="preview-top"><span class="live-dot"></span><strong>AI assistance active</strong><span>Visible to user</span></div><div class="active-banner"><i data-lucide="shield-check"></i> Transcription and coaching are active. Participants should be informed before recording or transcription begins.</div><div class="focus-widget-demo in-room"><div class="focus-widget-header"><span class="live-dot"></span><strong>Focus Mode</strong><button class="focus-toggle" type="button" aria-label="Collapse focus panel"><i data-lucide="chevron-right"></i></button></div><div class="focus-widget-body"><p>Small transcript: “Walk me through your Workday reporting experience.”</p><span>Audio cue ready. Presenter layout enabled.</span></div></div><div class="transcript-card"><span>Live transcript</span><p>Interviewer: Walk me through your Workday reporting experience.</p><p>You: I built matrix and advanced reports for HR operations, then partnered with payroll and recruiting teams to validate outputs during UAT.</p></div><div class="suggestion-grid"><div><i data-lucide="star"></i><strong>Improve answer</strong><span>Quantify volume, stakeholders, and outcome.</span></div><div><i data-lucide="brain"></i><strong>OpenAI</strong><span>Concise structure: context, action, result.</span></div><div><i data-lucide="message-square"></i><strong>Claude</strong><span>More natural story with transition lines.</span></div></div></div><form class="form" data-reveal><div class="form-grid"><label>Target Role<input type="text" value="Workday HRIS Analyst"></label><label>Model<select><option>Auto</option><option>OpenAI</option><option>Claude</option></select></label><label>Layout<select><option>Full coach</option><option>Focus Mode</option><option>Companion device</option><option>Presenter layout</option></select></label><label>Position<select><option>Right edge</option><option>Left edge</option><option>Second monitor</option><option>Phone/tablet</option></select></label><label class="full">Paste Job Description<textarea placeholder="Paste the job description here."></textarea></label><label class="full">Upload Resume<input type="file" accept=".pdf,.doc,.docx"></label><label class="full consent"><input type="checkbox" required> I understand AI assistance, transcription, and coaching must be visible and consent-based.</label></div><button class="btn btn-primary" type="submit"><i data-lucide="play-circle"></i>Generate Practice Session</button></form></div></section>
+    <section class="page-hero">
+      <div class="container" data-reveal>
+        <span class="eyebrow"><i data-lucide="radio"></i> Live Demo</span>
+        <h1>Set up a visible interview coach session.</h1>
+        <p class="lead">Save your resume, choose the role and model, then start a practice room with screen sharing, microphone listening, and live AI replies.</p>
+      </div>
+    </section>
+
+    <section class="section soft" id="demo-room">
+      <div class="container demo-panel">
+        <div class="coach-preview full-preview" data-reveal>
+          <div class="preview-top"><span class="live-dot"></span><strong>AI assistance active</strong><span>Visible to user</span></div>
+          <div class="active-banner"><i data-lucide="shield-check"></i> Transcription and coaching are active. Participants should be informed before recording or transcription begins.</div>
+          <div class="focus-widget-demo in-room">
+            <div class="focus-widget-header"><span class="live-dot"></span><strong>Focus Mode</strong><button class="focus-toggle" type="button" aria-label="Collapse focus panel"><i data-lucide="chevron-right"></i></button></div>
+            <div class="focus-widget-body"><p>Small transcript: "Walk me through your Workday reporting experience."</p><span>Audio cue ready. Presenter layout enabled.</span></div>
+          </div>
+          <div class="transcript-card">
+            <span>Live transcript</span>
+            <p>Interviewer: Walk me through your Workday reporting experience.</p>
+            <p>You: I built matrix and advanced reports for HR operations, then partnered with payroll and recruiting teams to validate outputs during UAT.</p>
+          </div>
+          <div class="suggestion-grid">
+            <div><i data-lucide="star"></i><strong>Improve answer</strong><span>Quantify volume, stakeholders, and outcome.</span></div>
+            <div><i data-lucide="brain"></i><strong>OpenAI</strong><span>Concise structure: context, action, result.</span></div>
+            <div><i data-lucide="message-square"></i><strong>Claude ready</strong><span>Add Claude later by setting an Anthropic API key.</span></div>
+          </div>
+        </div>
+
+        <form class="form" id="practiceSetupForm" data-reveal>
+          <div class="form-grid">
+            <label>Target Role<input id="targetRole" type="text" value="Workday HRIS Analyst"></label>
+            <label>Model<select id="coachModel"><option>Auto</option><option>OpenAI</option><option>Claude</option></select></label>
+            <label>Layout<select id="coachLayout"><option>Full coach</option><option>Focus Mode</option><option>Companion device</option><option>Presenter layout</option></select></label>
+            <label>Position<select id="coachPosition"><option>Right edge</option><option>Left edge</option><option>Second monitor</option><option>Phone/tablet</option></select></label>
+            <label class="full">Paste Job Description<textarea id="jobDescription" placeholder="Paste the job description here."></textarea></label>
+            <label class="full">Upload Resume<input id="resumeUpload" type="file" accept=".pdf,.doc,.docx,.txt"></label>
+            <div class="saved-resume full" id="savedResumePanel" hidden>
+              <div>
+                <strong id="savedResumeName">No resume saved</strong>
+                <span id="savedResumeMeta"></span>
+              </div>
+              <button class="btn btn-secondary" type="button" id="deleteResumeButton"><i data-lucide="trash-2"></i>Delete resume</button>
+            </div>
+            <label class="full consent"><input id="consentCheck" type="checkbox" required> I understand AI assistance, transcription, and coaching must be visible and consent-based.</label>
+          </div>
+          <button class="btn btn-primary" type="submit"><i data-lucide="play-circle"></i>Generate Practice Session</button>
+          <p class="inline-status" id="practiceSetupStatus" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
   </main>
-  <footer class="site-footer"><div class="container footer-grid"><div><a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a><p>Apply smarter. Interview stronger. Get hired faster.</p></div><div><h4>Product</h4><div class="footer-links"><a href="services.html">Features</a><a href="demo.html">Live Demo</a><a href="pricing.html">Pricing</a></div></div><div><h4>Trust</h4><div class="footer-links"><a href="services.html#safety">Safety</a><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div><div><h4>Contact</h4><p>Email: hello@applyvanta.ai</p></div></div><div class="container footer-bottom"><span>&copy; 2026 ApplyVanta.ai.</span><span>No hidden or deceptive assistance.</span></div></footer>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script><script src="script.js"></script>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a><p>Apply smarter. Interview stronger. Get hired faster.</p></div>
+      <div><h4>Product</h4><div class="footer-links"><a href="services.html">Features</a><a href="demo.html">Live Demo</a><a href="pricing.html">Pricing</a></div></div>
+      <div><h4>Trust</h4><div class="footer-links"><a href="services.html#safety">Safety</a><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div>
+      <div><h4>Contact</h4><p>Email: hello@applyvanta.ai</p></div>
+    </div>
+    <div class="container footer-bottom"><span>&copy; 2026 ApplyVanta.ai.</span><span>Visible AI assistance only.</span></div>
+  </footer>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

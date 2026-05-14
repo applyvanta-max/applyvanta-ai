@@ -132,9 +132,126 @@ document.addEventListener("DOMContentLoaded", () => {
     if (timer) timer.textContent = "1m";
   });
 
+  const store = {
+    get(key, fallback = null) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    },
+    set(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
+    remove(key) {
+      localStorage.removeItem(key);
+    }
+  };
+
+  const escapeHtml = (value) =>
+    String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  const formatCoachReply = (value) =>
+    escapeHtml(value)
+      .replace(/\n{2,}/g, "</p><p>")
+      .replace(/\n/g, "<br>");
+
+  const readFileAsDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const accountForm = document.querySelector("#accountForm");
+  accountForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const profile = {
+      email: document.querySelector("#accountEmail")?.value.trim(),
+      name: document.querySelector("#accountName")?.value.trim(),
+      createdAt: new Date().toISOString()
+    };
+    store.set("applyvanta.profile", profile);
+    const status = document.querySelector("#accountStatus");
+    if (status) status.textContent = "Account created. Opening setup...";
+    setTimeout(() => {
+      window.location.href = "demo.html#demo-room";
+    }, 500);
+  });
+
+  const practiceForm = document.querySelector("#practiceSetupForm");
+  const resumeInput = document.querySelector("#resumeUpload");
+  const savedResumePanel = document.querySelector("#savedResumePanel");
+  const savedResumeName = document.querySelector("#savedResumeName");
+  const savedResumeMeta = document.querySelector("#savedResumeMeta");
+
+  const refreshSavedResume = () => {
+    const resume = store.get("applyvanta.resume");
+    if (!savedResumePanel || !savedResumeName || !savedResumeMeta) return;
+    savedResumePanel.hidden = !resume;
+    if (!resume) return;
+    savedResumeName.textContent = resume.name;
+    savedResumeMeta.textContent = `${resume.type || "resume"} - ${Math.ceil((resume.size || 0) / 1024)} KB - saved ${new Date(resume.savedAt).toLocaleDateString()}`;
+  };
+
+  refreshSavedResume();
+
+  resumeInput?.addEventListener("change", async () => {
+    const file = resumeInput.files?.[0];
+    if (!file) return;
+    if (file.size > 2_500_000) {
+      const status = document.querySelector("#practiceSetupStatus");
+      if (status) status.textContent = "Resume is too large for browser storage. Please upload a file under 2.5 MB for this MVP.";
+      resumeInput.value = "";
+      return;
+    }
+    const dataUrl = await readFileAsDataUrl(file);
+    store.set("applyvanta.resume", {
+      name: file.name,
+      type: file.type || "resume",
+      size: file.size,
+      dataUrl,
+      savedAt: new Date().toISOString()
+    });
+    refreshSavedResume();
+  });
+
+  document.querySelector("#deleteResumeButton")?.addEventListener("click", () => {
+    store.remove("applyvanta.resume");
+    if (resumeInput) resumeInput.value = "";
+    refreshSavedResume();
+  });
+
+  practiceForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const setup = {
+      role: document.querySelector("#targetRole")?.value.trim() || "Interview candidate",
+      model: document.querySelector("#coachModel")?.value || "Auto",
+      layout: document.querySelector("#coachLayout")?.value || "Full coach",
+      position: document.querySelector("#coachPosition")?.value || "Right edge",
+      jobDescription: document.querySelector("#jobDescription")?.value.trim() || "",
+      consent: Boolean(document.querySelector("#consentCheck")?.checked),
+      resumeName: store.get("applyvanta.resume")?.name || "",
+      updatedAt: new Date().toISOString()
+    };
+    store.set("applyvanta.sessionSetup", setup);
+    const status = document.querySelector("#practiceSetupStatus");
+    if (status) status.textContent = "Setup saved. Opening the practice room...";
+    setTimeout(() => {
+      window.location.href = "app/pilot/session/workday-report-builder.html";
+    }, 500);
+  });
+
   document.querySelectorAll("form").forEach((form) => {
     if (form.closest("dialog")) return;
     if (form.classList.contains("session-composer")) return;
+    if (form.id === "accountForm" || form.id === "practiceSetupForm") return;
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -162,26 +279,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const answerThread = document.querySelector("#answerThread");
   const transcriptState = document.querySelector("#transcriptState");
   const transcriptThread = document.querySelector("#transcriptThread");
+  const screenPreviewVideo = document.querySelector("#screenPreviewVideo");
+  const documentStrip = document.querySelector("#sessionDocumentStrip");
+  const sessionSetup = store.get("applyvanta.sessionSetup", {});
+  let recognition = null;
+  let sessionStartedAt = null;
+  let timerId = null;
+  let lastAutoPrompt = "";
 
-  const escapeHtml = (value) =>
-    String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  const updateSessionTitle = () => {
+    const title = document.querySelector("#sessionTitle");
+    if (title && sessionSetup.role) title.textContent = `${sessionSetup.role} practice session`;
+    if (!documentStrip) return;
+    const resume = store.get("applyvanta.resume");
+    documentStrip.hidden = !resume;
+    if (resume) {
+      documentStrip.innerHTML = `<strong>Document uploaded</strong><span>${escapeHtml(resume.name)}</span><button type="button" data-session-delete-resume>Delete</button>`;
+      documentStrip.querySelector("[data-session-delete-resume]")?.addEventListener("click", () => {
+        store.remove("applyvanta.resume");
+        updateSessionTitle();
+      });
+    }
+  };
 
-  const formatCoachReply = (value) =>
-    escapeHtml(value)
-      .replace(/\n{2,}/g, "</p><p>")
-      .replace(/\n/g, "<br>");
+  updateSessionTitle();
 
-  const addTranscriptMessage = (message) => {
+  const addTranscriptMessage = (message, speaker = "Interviewer / audio") => {
     if (!transcriptThread) return;
     if (transcriptState) transcriptState.hidden = true;
     const entry = document.createElement("article");
     entry.className = "transcript-entry";
-    entry.innerHTML = `<strong>Question / transcript</strong><p>${escapeHtml(message)}</p>`;
+    entry.innerHTML = `<strong>${escapeHtml(speaker)}</strong><p>${escapeHtml(message)}</p>`;
     transcriptThread.append(entry);
     entry.scrollIntoView({ block: "nearest" });
   };
@@ -194,6 +322,34 @@ document.addEventListener("DOMContentLoaded", () => {
     entry.innerHTML = `<strong>${escapeHtml(meta)}</strong><p>${formatCoachReply(reply)}</p>`;
     answerThread.append(entry);
     entry.scrollIntoView({ block: "nearest" });
+  };
+
+  const requestCoachReply = async (message, speaker = "Interviewer / audio") => {
+    if (!message || message === lastAutoPrompt) return;
+    lastAutoPrompt = message;
+    addTranscriptMessage(message, speaker);
+    try {
+      const transcript = transcriptThread?.innerText || "";
+      const resume = store.get("applyvanta.resume");
+      const response = await fetch("/api/interview/reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message,
+          transcript,
+          role: sessionSetup.role || "Workday HRIS Analyst",
+          mode: sessionSetup.model || "real-time interview coaching",
+          jobDescription: sessionSetup.jobDescription || "",
+          resumeName: resume?.name || ""
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to generate a reply.");
+      const provider = data.provider === "openai" ? `ApplyVanta.ai Coach (${data.model || "OpenAI"})` : "ApplyVanta.ai Coach (demo)";
+      addAnswerMessage(data.reply, provider);
+    } catch (error) {
+      addAnswerMessage(`I could not reach the interview backend yet. ${error.message || "Please try again."}`, "Connection issue");
+    }
   };
 
   const setComposerState = () => {
@@ -209,42 +365,88 @@ document.addEventListener("DOMContentLoaded", () => {
   composer?.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!messageInput || !sendButton) return;
-
     const message = messageInput.value.trim();
     if (!message) return;
-
-    addTranscriptMessage(message);
     messageInput.value = "";
     setComposerState();
-
     const originalText = sendButton.textContent;
     sendButton.textContent = "Thinking...";
     sendButton.disabled = true;
+    await requestCoachReply(message, "Typed question");
+    sendButton.textContent = originalText || "Send";
+    setComposerState();
+    messageInput.focus();
+  });
 
+  const startTimer = () => {
+    const timer = document.querySelector("#sessionTimer");
+    sessionStartedAt = Date.now();
+    clearInterval(timerId);
+    timerId = setInterval(() => {
+      if (!timer || !sessionStartedAt) return;
+      timer.textContent = `${Math.max(1, Math.floor((Date.now() - sessionStartedAt) / 60000))}m`;
+    }, 1000);
+  };
+
+  const startSpeechRecognition = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      addAnswerMessage("Your browser does not support built-in live speech recognition. You can still type questions into the message box and get replies.", "Microphone note");
+      return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+    recognition.onresult = (event) => {
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const text = result[0]?.transcript?.trim();
+        if (result.isFinal && text) requestCoachReply(text, "Microphone transcript");
+      }
+    };
+    recognition.onerror = () => {
+      addAnswerMessage("Microphone transcription paused. You can restart the session or type the question manually.", "Microphone note");
+    };
     try {
-      const transcript = transcriptThread?.innerText || "";
-      const response = await fetch("/api/interview/reply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message,
-          transcript,
-          role: "Workday HRIS Analyst",
-          mode: "real-time interview coaching"
-        })
-      });
+      recognition.start();
+    } catch {
+      addAnswerMessage("Microphone transcription is already running.", "Microphone note");
+    }
+  };
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to generate a reply.");
-
-      const provider = data.provider === "openai" ? `ApplyVanta.ai Coach (${data.model || "OpenAI"})` : "ApplyVanta.ai Coach (demo)";
-      addAnswerMessage(data.reply, provider);
+  const startLiveSession = async () => {
+    document.querySelector("#shareOverlay")?.setAttribute("hidden", "");
+    try {
+      if (navigator.mediaDevices?.getDisplayMedia) {
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        if (screenPreviewVideo) {
+          screenPreviewVideo.srcObject = screenStream;
+          screenPreviewVideo.hidden = false;
+        }
+      }
+      if (navigator.mediaDevices?.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
+      const startLabel = document.querySelector(".audio-start span");
+      if (startLabel) startLabel.textContent = "Live";
+      document.querySelector(".audio-start")?.classList.add("recording");
+      startTimer();
+      startSpeechRecognition();
+      addAnswerMessage("Live session started. I will listen for spoken questions where browser speech recognition is available. You can also type any question below.", "Session ready");
     } catch (error) {
-      addAnswerMessage(`I could not reach the interview backend yet. ${error.message || "Please try again."}`, "Connection issue");
-    } finally {
-      sendButton.textContent = originalText || "Send";
-      setComposerState();
-      messageInput.focus();
+      addAnswerMessage(`Screen or microphone permission was not completed. ${error.message || "Please try Start again."}`, "Permission needed");
+    }
+  };
+
+  document.querySelector("[data-session-start]")?.addEventListener("click", () => {
+    if (navigator.mediaDevices?.getDisplayMedia) {
+      startLiveSession();
+    } else {
+      const overlay = document.querySelector("#shareOverlay");
+      if (overlay) overlay.hidden = false;
     }
   });
+
+  document.querySelector("[data-share-confirm]")?.addEventListener("click", startLiveSession);
 });
