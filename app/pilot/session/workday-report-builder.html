@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time AI Interview Copilot | ApplyVanta.ai</title>
+  <link rel="stylesheet" href="../../../styles.css">
+</head>
+<body class="session-shell">
+  <header class="session-topbar">
+    <div class="session-title">
+      <i data-lucide="clock-3"></i>
+      <strong id="sessionTimer">0m</strong>
+      <span>Workday Report Builder (Contract) @ Belin Health</span>
+    </div>
+    <div class="session-tools" aria-label="Session tools">
+      <button type="button" aria-label="Play prompt"><i data-lucide="play-circle"></i></button>
+      <button type="button" aria-label="Generate cue"><i data-lucide="zap"></i></button>
+      <button type="button" aria-label="Delete"><i data-lucide="trash-2"></i></button>
+      <button type="button" aria-label="Language"><i data-lucide="globe-2"></i></button>
+      <button type="button" aria-label="Reflection"><i data-lucide="brain"></i></button>
+      <button type="button" aria-label="Notes"><i data-lucide="scroll-text"></i></button>
+      <button type="button" aria-label="Edit"><i data-lucide="square-pen"></i></button>
+      <button type="button" aria-label="Documents"><i data-lucide="file-text"></i></button>
+      <span class="extension-ready"><span class="green-dot"></span>Extension Ready</span>
+      <button class="duo-disabled" type="button" disabled><i data-lucide="user-plus"></i>Duo</button>
+      <button type="button" aria-label="Session controls"><i data-lucide="sliders-horizontal"></i></button>
+    </div>
+    <div class="session-actions">
+      <button class="audio-start" type="button" data-share-open onclick="document.getElementById('shareOverlay').hidden = false"><i data-lucide="play"></i><span>Start</span></button>
+      <button class="danger-line" type="button" aria-label="Camera off"><i data-lucide="video-off"></i></button>
+      <button class="muted-line" type="button" aria-label="Microphone muted"><i data-lucide="mic-off"></i></button>
+      <button type="button" data-audio-popover aria-label="More audio options" onclick="document.getElementById('audioPopover').hidden = !document.getElementById('audioPopover').hidden; document.getElementById('settingsPopover').hidden = true"><i data-lucide="chevron-down"></i></button>
+      <button class="power-btn" type="button" aria-label="End session"><i data-lucide="power"></i></button>
+      <button class="settings-btn" type="button" data-settings-popover aria-label="Session settings" onclick="document.getElementById('settingsPopover').hidden = !document.getElementById('settingsPopover').hidden; document.getElementById('audioPopover').hidden = true"><i data-lucide="settings"></i></button>
+    </div>
+  </header>
+
+  <main class="session-grid">
+    <section class="answer-pane">
+      <button class="expand-pane" type="button" aria-label="Expand answer pane"><i data-lucide="maximize-2"></i></button>
+      <div class="answer-empty" id="answerState">
+        <p>On the left side, the AI will analyze and give response to your target's questions.</p>
+        <p>Type an interview question or paste transcript text below, then press Send to get a live coaching reply.</p>
+      </div>
+      <div class="answer-thread" id="answerThread" aria-live="polite"></div>
+      <div class="recording-label"><span></span>Live Recording</div>
+    </section>
+    <aside class="screen-pane">
+      <div class="screen-head">Screen</div>
+      <div class="transcript-empty" id="transcriptState">Your transcript will show up here.</div>
+      <div class="transcript-thread" id="transcriptThread" aria-live="polite"></div>
+      <div class="recording-label"><span></span>Live Recording</div>
+    </aside>
+  </main>
+
+  <form class="session-composer" id="interviewComposer">
+    <input id="interviewMessage" type="text" maxlength="2000" placeholder="Type the interviewer's question or paste transcript text...">
+    <button type="submit" disabled>Send</button>
+    <span id="composerCount">0/2000 characters</span>
+  </form>
+
+  <div class="session-help">
+    <button type="button"><i data-lucide="monitor"></i>Tutorial<i data-lucide="play"></i></button>
+    <button type="button"><i data-lucide="circle-help"></i>Info</button>
+  </div>
+
+  <section class="session-popover audio-popover" id="audioPopover" hidden>
+    <div class="popover-head"><strong><i data-lucide="mic"></i>Audio Input</strong><span>Connected</span></div>
+    <p class="warning-copy">Changing the microphone will stop and restart the current recording.</p>
+    <h3>Select Microphone</h3>
+    <button class="selected" type="button"><span></span>Microphone Array (Intel Smart Sound Technology for Digital Microphones)</button>
+    <button type="button"><span></span>Default - Microphone Array (Intel Smart Sound Technology for Digital Microphones)</button>
+    <button type="button"><span></span>Communications - Microphone Array (Intel Smart Sound Technology for Digital Microphones)</button>
+  </section>
+
+  <section class="session-popover settings-popover" id="settingsPopover" hidden>
+    <label><span><strong>Auto Scroll</strong><em>Automatically scroll to new messages</em></span><input type="checkbox"></label>
+    <label><span><strong>Right Panel</strong><em>Toggle visibility of Right panel</em></span><input type="checkbox" checked></label>
+    <label><span><strong>Manual Mode</strong><em>Control response generation manually</em></span><input type="checkbox"></label>
+    <label><span><strong>Message Order</strong><em>Show newest messages at the top</em></span><input type="checkbox" checked></label>
+    <label class="range-row"><strong>Font Size</strong><input type="range" min="12" max="24" value="16"><em>16px</em><span>Adjust the font size of the text</span></label>
+    <label class="range-row"><strong>Teleprompter Speed</strong><input type="range" min="80" max="220" value="155"><em>155</em><span>Adjust words per minute</span></label>
+  </section>
+
+  <section class="share-overlay" id="shareOverlay" hidden>
+    <div class="share-dialog">
+      <h2>Choose what to share with ApplyVanta.ai</h2>
+      <p>The site will be able to see the contents of your selected screen, window, or tab after you approve sharing.</p>
+      <div class="share-tabs"><button type="button">Chrome Tab</button><button type="button">Window</button><button class="active" type="button">Entire Screen</button></div>
+      <div class="share-preview">
+        <div class="screen-thumb"><span>Entire screen</span></div>
+        <label><i data-lucide="volume-2"></i>Also share system audio<input type="checkbox" checked></label>
+      </div>
+      <div class="share-actions"><button class="share-primary" type="button" data-share-confirm onclick="document.getElementById('shareOverlay').hidden = true; document.getElementById('sessionTimer').textContent = '1m'">Share</button><button type="button" data-share-cancel onclick="document.getElementById('shareOverlay').hidden = true">Cancel</button></div>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="../../../script.js"></script>
+  <script>
+    (() => {
+      const audioPopover = document.querySelector("#audioPopover");
+      const settingsPopover = document.querySelector("#settingsPopover");
+      const shareOverlay = document.querySelector("#shareOverlay");
+      const audioButton = document.querySelector("[data-audio-popover]");
+      const shareButton = document.querySelector("[data-share-open]");
+      const settingsButton = document.querySelector("[data-settings-popover]");
+
+      audioButton?.addEventListener("click", () => {
+        if (audioPopover) audioPopover.hidden = !audioPopover.hidden;
+        if (settingsPopover) settingsPopover.hidden = true;
+      });
+
+      settingsButton?.addEventListener("click", () => {
+        if (settingsPopover) settingsPopover.hidden = !settingsPopover.hidden;
+        if (audioPopover) audioPopover.hidden = true;
+      });
+
+      shareButton?.addEventListener("click", () => {
+        if (shareOverlay) shareOverlay.hidden = false;
+      });
+
+      document.querySelector("[data-share-cancel]")?.addEventListener("click", () => {
+        if (shareOverlay) shareOverlay.hidden = true;
+      });
+
+      document.querySelector("[data-share-confirm]")?.addEventListener("click", () => {
+        if (shareOverlay) shareOverlay.hidden = true;
+        const timer = document.querySelector("#sessionTimer");
+        if (timer) timer.textContent = "1m";
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session History | ApplyVanta.ai</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="app-shell">
+  <aside class="app-sidebar">
+    <a class="app-logo" href="../../index.html">
+      <span class="brand-mark"><i data-lucide="sparkles"></i></span>
+      <span>ApplyVanta.ai</span>
+    </a>
+    <div class="app-profile">
+      <span class="app-avatar">R</span>
+      <span><i data-lucide="user"></i> GENERAL</span>
+      <span><i data-lucide="clock-3"></i> Unlimited</span>
+    </div>
+    <div class="app-actions">
+      <button type="button"><i data-lucide="link"></i>Refer</button>
+      <button type="button"><i data-lucide="crown"></i>Upgrade</button>
+    </div>
+    <nav class="app-menu" aria-label="App navigation">
+      <p>AI Copilot</p>
+      <a class="active" href="#interview"><i data-lucide="layout-grid"></i>Interview<i data-lucide="chevron-right"></i></a>
+      <a href="#meeting"><i data-lucide="video"></i>Professional Meeting<i data-lucide="chevron-right"></i></a>
+      <a href="#assessment"><i data-lucide="clipboard-list"></i>Online Assessment<i data-lucide="chevron-right"></i></a>
+      <a href="#phone"><i data-lucide="phone-call"></i>Phone Interview<i data-lucide="chevron-right"></i></a>
+      <a href="#resources"><i data-lucide="archive"></i>Resource Hub<i data-lucide="chevron-right"></i></a>
+      <p>New Features</p>
+      <a class="green" href="#duo"><i data-lucide="users"></i>ApplyVanta Duo<span>Beta</span><i data-lucide="chevron-right"></i></a>
+      <a class="gold" href="#launchpad"><i data-lucide="rocket"></i>Career Launchpad<i data-lucide="chevron-right"></i></a>
+      <p>History</p>
+      <a href="#history"><i data-lucide="history"></i>Session History<i data-lucide="chevron-right"></i></a>
+    </nav>
+    <button class="sidebar-collapse" type="button" aria-label="Collapse sidebar"><i data-lucide="chevron-left"></i></button>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-status">C.F preparing for a Workday Reporting interview</div>
+    <button class="focus-mode-btn" type="button"><i data-lucide="monitor"></i>Focus Mode</button>
+
+    <section class="copilot-hero" id="interview">
+      <div class="hero-title-row">
+        <i data-lucide="settings"></i>
+        <h1>Live Interview Copilot</h1>
+      </div>
+      <div class="copilot-tabs" role="tablist" aria-label="Copilot modes">
+        <button class="active" type="button">Live</button>
+        <button type="button">Mock</button>
+        <button type="button">Coding</button>
+      </div>
+    </section>
+
+    <div class="preset-row">
+      <label class="app-search"><i data-lucide="bookmark"></i><input type="search" placeholder="Search saved presets or recent sessions..."></label>
+      <button class="outline-cyan" type="button"><i data-lucide="bookmark-plus"></i>Save Preset</button>
+    </div>
+
+    <section class="timeline-section">
+      <div class="step-marker"><span>1</span></div>
+      <div class="section-title-row">
+        <h2>Interview Setup</h2>
+        <button class="icon-square" type="button" aria-label="Collapse interview setup"><i data-lucide="chevron-up"></i></button>
+      </div>
+      <div class="app-card setup-card">
+        <h3>How should AI respond?</h3>
+        <div class="setup-grid">
+          <button type="button">
+            <strong>Quick Setup</strong>
+            <span>Fill in your interview info, AI handles the rest.</span>
+            <em>Recommended</em>
+          </button>
+          <button class="selected" type="button">
+            <strong>Custom Prompt</strong>
+            <span>Write your own instructions to control how AI responds.</span>
+          </button>
+        </div>
+        <div class="field-block">
+          <div><span>Select Prompt</span><button type="button"><i data-lucide="square-pen"></i>Manage</button></div>
+          <select>
+            <option>Workday Report Builder</option>
+            <option>Senior HRIS Analyst</option>
+            <option>Payroll Reconciliation</option>
+          </select>
+        </div>
+        <div class="field-block">
+          <span>Prompt Preview</span>
+          <textarea readonly>Use Workday Report Builder with business objects, data sources, calculated fields, and filters.
+Partner with HR and stakeholders to gather requirements and deliver reporting solutions.
+Build dashboards and provide actionable insights for leadership.
+Ensure data accuracy, validation, and reporting consistency.</textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <div class="step-marker"><span>2</span></div>
+      <div class="section-title-row">
+        <h2>Documents</h2>
+        <div class="title-actions">
+          <button class="icon-square" type="button" aria-label="Upload document"><i data-lucide="upload"></i></button>
+          <button class="icon-square" type="button" aria-label="Collapse documents"><i data-lucide="chevron-up"></i></button>
+        </div>
+      </div>
+      <div class="app-card docs-card">
+        <h3>3 documents uploaded</h3>
+        <label class="app-search"><input type="search" placeholder="Search documents..."></label>
+        <div class="doc-table">
+          <div class="doc-head"><span></span><span>Name</span><span>Type</span><span>Time</span><span>View</span><span>Delete</span></div>
+          <div><input type="checkbox"><span><i data-lucide="file"></i>BHUVAN CHANDRA KASARAPU_BCBSn...</span><span>resume</span><span>5/13/2026</span><button><i data-lucide="download"></i></button><button class="danger"><i data-lucide="trash-2"></i></button></div>
+          <div><input type="checkbox"><span><i data-lucide="file"></i>Bhuvan_Kasarapu_2026.pdf</span><span>resume</span><span>5/12/2026</span><button><i data-lucide="download"></i></button><button class="danger"><i data-lucide="trash-2"></i></button></div>
+          <div><input type="checkbox"><span><i data-lucide="file"></i>Ruchitha Balerao w c (1).docx</span><span>resume</span><span>5/6/2026</span><button><i data-lucide="download"></i></button><button class="danger"><i data-lucide="trash-2"></i></button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <div class="step-marker"><span>3</span></div>
+      <div class="section-title-row">
+        <h2>Advanced</h2>
+        <button class="icon-square" type="button" aria-label="Collapse advanced"><i data-lucide="chevron-up"></i></button>
+      </div>
+      <div class="app-card advanced-card">
+        <div class="ready-row"><span class="green-dot"></span>Extension Ready</div>
+        <button class="model-row" type="button" data-open-models><span><i data-lucide="bot"></i><em>Model</em><strong>GPT 5.1</strong></span><i data-lucide="sliders-horizontal"></i></button>
+        <div class="advanced-line"><div><h3>Image Analysis Context</h3><p>Help the AI focus on specific details in screenshots.</p></div><button type="button"><i data-lucide="plus"></i>Add</button></div>
+        <div class="advanced-line"><div><h3>Speech Reflection <i data-lucide="circle-help"></i></h3><p>Analyzes structure, clarity, confidence, and impact.</p></div><label class="switch"><input type="checkbox"><span></span></label></div>
+        <div class="advanced-line"><div><h3>Q&A Prep <i data-lucide="circle-help"></i></h3><p>Prepare answers in advance for faster, more confident responses.</p></div><button type="button"><i data-lucide="pencil"></i>Configure</button></div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <div class="step-marker"><span>4</span></div>
+      <div class="section-title-row">
+        <h2>Audio Input</h2>
+        <button class="icon-square" type="button" aria-label="Collapse audio input"><i data-lucide="chevron-up"></i></button>
+      </div>
+      <div class="app-card audio-card">
+        <div class="ready-row"><span class="green-dot"></span>Microphone Connected</div>
+        <div><span>Audio</span><strong>Microphone Array (Intel Smart Sound Technology for Digital Microphones)</strong></div>
+        <button type="button"><i data-lucide="sliders-horizontal"></i></button>
+      </div>
+    </section>
+
+    <div class="start-row">
+      <span>Go</span>
+      <button type="button" data-start-session>Start</button>
+    </div>
+
+    <section class="history-panel" id="history">
+      <h2>History</h2>
+      <div class="history-stats">
+        <span><i data-lucide="activity"></i><strong>372</strong>Total</span>
+        <span><i data-lucide="trending-up"></i><strong>371</strong>Done</span>
+        <span><i data-lucide="zap"></i><strong>1</strong>Active</span>
+      </div>
+      <label class="app-search large"><i data-lucide="search"></i><input type="search" placeholder="Search sessions by role, company, or type..."></label>
+      <h3><i data-lucide="clock"></i>Recent</h3>
+      <div class="session-list">
+        <article class="session active"><span><i data-lucide="zap"></i></span><div><strong>Principal Workday Technical Analyst</strong><p><i data-lucide="map-pin"></i>Blue Cross NC</p></div><em>Live</em><time>May 13, 11:06 PM • Active</time></article>
+        <article class="session"><span><i data-lucide="history"></i></span><div><strong>HRIS SERVICE DELIVERY LEAD</strong><p><i data-lucide="map-pin"></i>SSA Marine</p></div><em>Live</em><time>May 13, 10:45 PM</time></article>
+        <article class="session"><span><i data-lucide="history"></i></span><div><strong>Principal Workday Technical Analyst</strong><p><i data-lucide="map-pin"></i>Blue Cross NC</p></div><em>Live</em><time>May 13, 10:33 PM</time></article>
+      </div>
+    </section>
+
+    <div class="floating-help">
+      <button type="button"><i data-lucide="play"></i>Tutorial</button>
+      <button type="button"><i data-lucide="circle-help"></i>Info</button>
+    </div>
+  </main>
+
+  <dialog class="model-dialog" id="modelDialog">
+    <form method="dialog">
+      <div class="dialog-head"><h2>Select Model</h2><button type="submit" aria-label="Close model picker"><i data-lucide="x"></i></button></div>
+      <button class="selected" type="button"><i data-lucide="bot"></i>GPT 5.1<i data-lucide="search"></i><span></span></button>
+      <button type="button"><i data-lucide="bot"></i>GPT 5.2<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="bot"></i>GPT 5.4<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="bot"></i>GPT 5.4 Mini<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="sparkle"></i>Sonnet 4.6<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="sparkle"></i>Sonnet 4.5<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="sparkle"></i>Haiku 4.5<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="gem"></i>Gemini 3<i data-lucide="search"></i></button>
+    </form>
+  </dialog>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="../../script.js"></script>
+</body>
+</html>
