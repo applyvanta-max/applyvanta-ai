@@ -151,6 +151,17 @@ const createInterviewReply = async (payload) => {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     const detail = data?.error?.message || "The AI provider returned an error.";
+    if (/quota|billing|insufficient|credit/i.test(detail)) {
+      return {
+        reply: [
+          localCoachReply({ message, role }),
+          "",
+          "Note: live OpenAI replies are paused because the connected API key has no available quota or billing credits."
+        ].join("\n"),
+        provider: "local-demo",
+        warning: detail
+      };
+    }
     throw new Error(detail);
   }
 
