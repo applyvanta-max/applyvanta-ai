@@ -3538,6 +3538,296 @@ body.session-shell {
   }
 }
 
+/* ApplyVanta visual repair pass */
+body.copilot-setup-shell {
+  grid-template-columns: 280px minmax(0, 1fr);
+  background: #0e1726;
+  color: #f8fbff;
+}
+
+body.copilot-setup-shell .copilot-sidebar {
+  background: #243346;
+  border-right: 1px solid #34465f;
+}
+
+body.copilot-setup-shell .copilot-setup-main {
+  max-width: 1120px;
+  padding: 34px clamp(18px, 4vw, 52px) 72px;
+}
+
+body.copilot-setup-shell .setup-header h1 {
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  line-height: 0.98;
+}
+
+body.copilot-setup-shell .setup-flow {
+  max-width: 100%;
+}
+
+body.copilot-setup-shell .setup-card {
+  background: #162236;
+  border-color: #2a3b52;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+}
+
+body.copilot-setup-shell .setup-card h2 {
+  color: #ffffff;
+}
+
+body.copilot-setup-shell .response-choice-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.copilot-setup-shell .response-choice {
+  position: relative;
+  min-height: 126px;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  color: #f8fbff;
+  background: #0f1a2b;
+  border-color: #2a3b52;
+}
+
+body.copilot-setup-shell .response-choice input[type="radio"] {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 2px solid #6f8198;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 4px #0f1a2b;
+}
+
+body.copilot-setup-shell .response-choice input[type="radio"]:checked {
+  border-color: #67e8f9;
+  background: #67e8f9;
+}
+
+body.copilot-setup-shell .response-choice strong {
+  margin: 0 0 6px;
+  color: #ffffff;
+  font-size: 1.02rem;
+}
+
+body.copilot-setup-shell .response-choice span {
+  max-width: 34ch;
+  color: #b8c8da;
+  line-height: 1.45;
+}
+
+body.copilot-setup-shell .response-choice.active,
+body.copilot-setup-shell .response-choice:has(input:checked) {
+  border-color: #1fc7e8;
+  background: #123044;
+}
+
+body.copilot-setup-shell .setup-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.copilot-setup-shell .setup-grid label,
+body.copilot-setup-shell .document-upload-row label {
+  min-width: 0;
+  color: #f8fbff;
+}
+
+body.copilot-setup-shell .setup-grid input,
+body.copilot-setup-shell .setup-grid select,
+body.copilot-setup-shell .setup-grid textarea,
+body.copilot-setup-shell .document-upload-row select,
+body.copilot-setup-shell .document-upload-row input {
+  min-width: 0;
+  background: #0b1424;
+  border-color: #33465f;
+  color: #f8fbff;
+}
+
+body.copilot-setup-shell .setup-grid input,
+body.copilot-setup-shell .setup-grid select,
+body.copilot-setup-shell .document-upload-row select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.copilot-setup-shell .compact-mode-pill,
+body.copilot-setup-shell .app-actions button,
+body.copilot-setup-shell .audio-device-card button {
+  border-color: #465b76;
+  background: #314158;
+  color: #ffffff;
+}
+
+body.copilot-setup-shell .file-drop,
+body.copilot-setup-shell .advanced-toggle,
+body.copilot-setup-shell .audio-device-card,
+body.copilot-setup-shell .saved-resume {
+  background: #0f1a2b;
+  border-color: #2a3b52;
+}
+
+body.copilot-setup-shell .step-marker {
+  width: 48px;
+  height: 48px;
+  background: #17273e;
+  border-color: #34465f;
+  color: #67e8f9;
+}
+
+body.session-shell {
+  color: #eaf6ff;
+  background: #0f1726;
+}
+
+body.session-shell .session-topbar {
+  height: 74px;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(340px, 1.1fr) auto;
+  gap: 10px;
+  padding: 0 18px 0 24px;
+  overflow: hidden;
+  color: #f8fbff;
+  background: #1b2a3d;
+  border-bottom-color: #2a3b52;
+}
+
+body.session-shell .session-title {
+  min-width: 0;
+  gap: 8px;
+}
+
+body.session-shell .session-title span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.session-shell .session-tools {
+  min-width: 0;
+  justify-content: center;
+  gap: 7px;
+  overflow: hidden;
+}
+
+body.session-shell .session-tools button,
+body.session-shell .session-actions button {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+}
+
+body.session-shell .session-tools button svg,
+body.session-shell .session-actions button svg {
+  width: 22px;
+  height: 22px;
+}
+
+body.session-shell .extension-ready {
+  flex: 0 0 auto;
+  margin-left: 4px;
+  gap: 7px;
+  font-size: 0.92rem;
+  color: #22c55e;
+}
+
+body.session-shell .session-tools .green-dot {
+  width: 16px;
+  height: 16px;
+}
+
+body.session-shell .duo-disabled {
+  min-width: 70px;
+  padding: 0 10px;
+}
+
+body.session-shell .session-actions {
+  min-width: 0;
+  gap: 6px;
+}
+
+body.session-shell .session-actions .audio-start {
+  flex-basis: auto;
+  min-width: 66px;
+  padding: 0 9px;
+  color: #67e8f9;
+}
+
+body.session-shell .session-grid,
+body.session-shell .answer-pane,
+body.session-shell .screen-pane {
+  background: #0f1726;
+}
+
+body.session-shell .answer-empty,
+body.session-shell .coach-message,
+body.session-shell .transcript-entry,
+body.session-shell .session-document-strip {
+  background: #172337;
+  border-color: #2a3b52;
+  box-shadow: none;
+}
+
+body.session-shell .answer-empty p,
+body.session-shell .coach-message p,
+body.session-shell .transcript-entry p,
+body.session-shell .transcript-empty {
+  color: #d7e5f3;
+  font-weight: 650;
+}
+
+body.session-shell .coach-message strong,
+body.session-shell .transcript-entry strong,
+body.session-shell .session-document-strip strong,
+body.session-shell .screen-head {
+  color: #67e8f9;
+}
+
+body.session-shell .session-composer {
+  background: rgba(23, 35, 55, 0.98);
+  border-top-color: #2a3b52;
+}
+
+body.session-shell .session-composer input {
+  background: #0b1424;
+  color: #f8fbff;
+  border-color: #33465f;
+}
+
+body.session-shell .session-help button,
+body.session-shell .session-composer button:not(:disabled),
+body.session-shell .session-actions .audio-start.recording {
+  color: #ffffff;
+  background: #0e7490;
+}
+
+@media (max-width: 1320px) {
+  body.session-shell .session-tools button:nth-of-type(6),
+  body.session-shell .session-tools button:nth-of-type(7),
+  body.session-shell .session-tools button:nth-of-type(8),
+  body.session-shell .duo-disabled {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  body.copilot-setup-shell {
+    grid-template-columns: 1fr;
+  }
+
+  body.copilot-setup-shell .copilot-sidebar {
+    position: static;
+    height: auto;
+  }
+
+  body.copilot-setup-shell .setup-grid,
+  body.copilot-setup-shell .response-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ApplyVanta.ai expanded homepage */
 .clone-hero {
   position: relative;
