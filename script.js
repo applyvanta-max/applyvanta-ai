@@ -230,6 +230,66 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.readAsDataURL(file);
     });
 
+  const loadExternalScript = (src, globalName) =>
+    new Promise((resolve, reject) => {
+      if (globalName && window[globalName]) {
+        resolve(window[globalName]);
+        return;
+      }
+
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        existing.addEventListener("load", () => resolve(globalName ? window[globalName] : true), { once: true });
+        existing.addEventListener("error", reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onload = () => resolve(globalName ? window[globalName] : true);
+      script.onerror = () => reject(new Error(`Could not load ${src}`));
+      document.head.append(script);
+    });
+
+  const extractPdfText = async (file) => {
+    const pdfjsLib = await loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js", "pdfjsLib");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const buffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+    const pages = [];
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+      pages.push(content.items.map((item) => item.str).join(" "));
+    }
+
+    return pages.join("\n").replace(/\s+/g, " ").trim();
+  };
+
+  const extractDocxText = async (file) => {
+    const mammoth = await loadExternalScript("https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js", "mammoth");
+    const buffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
+    return String(result.value || "").replace(/\s+/g, " ").trim();
+  };
+
+  const extractResumeText = async (file) => {
+    const name = file.name.toLowerCase();
+    const type = file.type || "";
+    if (type.includes("pdf") || name.endsWith(".pdf")) return extractPdfText(file);
+    if (
+      type.includes("wordprocessingml") ||
+      type.includes("msword") ||
+      name.endsWith(".docx")
+    ) {
+      return extractDocxText(file);
+    }
+    if (type.startsWith("text/") || name.endsWith(".txt")) return file.text();
+    return "";
+  };
+
   const accountForm = document.querySelector("#accountForm");
   const accountCard = document.querySelector("#accountCard");
   const accountDisplayName = document.querySelector("#accountDisplayName");
@@ -376,7 +436,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!client || !user) return;
     const { data } = await client
       .from("resumes")
-      .select("id,file_name,file_path,file_size,mime_type,created_at")
+      .select("id,file_name,file_path,file_size,mime_type,resume_text,created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(1)
@@ -388,6 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: data.file_name,
       path: data.file_path,
       type: data.mime_type || "resume",
+      text: data.resume_text || "",
       size: data.file_size || 0,
       savedAt: data.created_at,
       provider: "supabase"
@@ -404,6 +465,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatusText(status, "Saving resume...");
 
     try {
+      setStatusText(status, "Reading resume text...");
+      const resumeText = (await extractResumeText(file)).slice(0, 12000);
+      if (!resumeText) {
+        setStatusText(status, "I saved the file, but could not read text from this resume format.");
+      }
+
       const { client, user } = await getSupabaseUser();
       if (client && user) {
         const path = `${user.id}/${Date.now()}-${safeStorageName(file.name)}`;
@@ -420,9 +487,10 @@ document.addEventListener("DOMContentLoaded", () => {
             file_name: file.name,
             file_path: path,
             file_size: file.size,
-            mime_type: file.type || "resume"
+            mime_type: file.type || "resume",
+            resume_text: resumeText
           })
-          .select("id,file_name,file_path,file_size,mime_type,created_at")
+          .select("id,file_name,file_path,file_size,mime_type,resume_text,created_at")
           .single();
         if (error) throw error;
 
@@ -431,6 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
           name: data.file_name,
           path: data.file_path,
           type: data.mime_type || "resume",
+          text: data.resume_text || resumeText,
           size: data.file_size || 0,
           savedAt: data.created_at,
           provider: "supabase"
@@ -446,6 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
           name: file.name,
           type: file.type || "resume",
           size: file.size,
+          text: resumeText,
           dataUrl,
           savedAt: new Date().toISOString()
         });
@@ -480,12 +550,16 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     const setup = {
       role: document.querySelector("#targetRole")?.value.trim() || "Interview candidate",
+      scenario: document.querySelector("#scenarioSelect")?.value || "General Purpose",
+      responseMode: document.querySelector('input[name="responseMode"]:checked')?.value || "Quick Setup",
+      customPrompt: document.querySelector("#customPrompt")?.value.trim() || "",
       model: document.querySelector("#coachModel")?.value || "Auto",
       layout: document.querySelector("#coachLayout")?.value || "Full coach",
       position: document.querySelector("#coachPosition")?.value || "Right edge",
       jobDescription: document.querySelector("#jobDescription")?.value.trim() || "",
       consent: Boolean(document.querySelector("#consentCheck")?.checked),
       resumeName: store.get("applyvanta.resume")?.name || "",
+      resumeText: store.get("applyvanta.resume")?.text || "",
       updatedAt: new Date().toISOString()
     };
     const status = document.querySelector("#practiceSetupStatus");
@@ -501,7 +575,13 @@ document.addEventListener("DOMContentLoaded", () => {
             user_id: user.id,
             role: setup.role,
             model: setup.model,
-            job_description: setup.jobDescription,
+            job_description: [
+              setup.scenario ? `Scenario: ${setup.scenario}` : "",
+              setup.responseMode ? `Response mode: ${setup.responseMode}` : "",
+              setup.customPrompt ? `Custom instructions: ${setup.customPrompt}` : "",
+              setup.jobDescription ? `Job description: ${setup.jobDescription}` : ""
+            ].filter(Boolean).join("\n\n"),
+            transcript: setup.resumeText ? `Resume context saved: ${setup.resumeText.slice(0, 2000)}` : null,
             resume_id: resume?.provider === "supabase" ? resume.id : null
           })
           .select("id")
@@ -616,8 +696,12 @@ document.addEventListener("DOMContentLoaded", () => {
           transcript,
           role: sessionSetup.role || "Workday HRIS Analyst",
           mode: sessionSetup.model || "real-time interview coaching",
+          scenario: sessionSetup.scenario || "",
+          customPrompt: sessionSetup.customPrompt || "",
+          responseMode: sessionSetup.responseMode || "",
           jobDescription: sessionSetup.jobDescription || "",
-          resumeName: resume?.name || ""
+          resumeName: resume?.name || "",
+          resumeText: resume?.text || sessionSetup.resumeText || ""
         })
       });
       const data = await response.json();

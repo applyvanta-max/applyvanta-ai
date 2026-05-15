@@ -48,7 +48,7 @@ const readRequestJson = (req) =>
     let body = "";
     req.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 25000) {
+      if (body.length > 80000) {
         rejectBody(new Error("Request body is too large."));
         req.destroy();
       }
@@ -107,8 +107,12 @@ const createInterviewReply = async (payload) => {
   const transcript = cleanText(payload.transcript);
   const role = cleanText(payload.role, 120) || "Workday HRIS Analyst";
   const mode = cleanText(payload.mode, 80) || "Interview coach";
+  const scenario = cleanText(payload.scenario, 120);
+  const responseMode = cleanText(payload.responseMode, 80);
+  const customPrompt = cleanText(payload.customPrompt, 3000);
   const jobDescription = cleanText(payload.jobDescription, 2500);
   const resumeName = cleanText(payload.resumeName, 180);
+  const resumeText = cleanText(payload.resumeText, 12000);
 
   if (!message) {
     return { reply: "Type or paste the interviewer's question first, then I can coach the answer.", provider: "local" };
@@ -129,6 +133,7 @@ const createInterviewReply = async (payload) => {
       instructions: [
         "You are ApplyVanta.ai, a visible, consent-based interview coach.",
         "Help candidates prepare and respond clearly. Do not encourage deception, cheating, stealth behavior, or bypassing interview rules.",
+        "Use the user's uploaded resume text, job description, scenario, and custom instructions to personalize the answer.",
         "Return concise coaching with a ready-to-say answer, structure notes, and one follow-up suggestion."
       ].join(" "),
       input: [
@@ -137,7 +142,11 @@ const createInterviewReply = async (payload) => {
           content: [
             `Target role: ${role}`,
             `Mode: ${mode}`,
+            scenario ? `Scenario: ${scenario}` : "Scenario: not specified.",
+            responseMode ? `Response mode: ${responseMode}` : "Response mode: not specified.",
+            customPrompt ? `Custom response instructions: ${customPrompt}` : "Custom response instructions: none.",
             resumeName ? `Saved resume file: ${resumeName}` : "Saved resume file: none.",
+            resumeText ? `Resume text context: ${resumeText}` : "Resume text context: none extracted yet.",
             jobDescription ? `Job description context: ${jobDescription}` : "Job description context: none.",
             transcript ? `Current transcript: ${transcript}` : "Current transcript: none yet.",
             `Question or user message: ${message}`
