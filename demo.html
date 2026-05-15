@@ -3,91 +3,178 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Demo | ApplyVanta.ai</title>
+  <title>Interview Setup | ApplyVanta.ai</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a>
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html">Product</a>
-        <a href="pricing.html">Pricing</a>
-        <a class="active" href="demo.html">Live Demo</a>
-        <a href="contact.html">Contact</a>
-      </nav>
-      <div class="nav-actions">
-        <a class="btn btn-primary" href="#demo-room"><i data-lucide="mic"></i>Try Coach Demo</a>
-        <button class="menu-toggle" type="button" aria-label="Open menu"><i data-lucide="menu"></i></button>
-      </div>
+<body class="copilot-setup-shell">
+  <aside class="copilot-sidebar">
+    <a class="copilot-logo" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><strong>ApplyVanta.ai</strong></a>
+    <div class="copilot-user">
+      <span>R</span>
+      <div><strong>GENERAL</strong><small>Visible copilot</small></div>
     </div>
-  </header>
+    <nav class="copilot-nav" aria-label="Copilot sections">
+      <a class="active" href="#interview"><i data-lucide="layout-grid"></i>Interview<i data-lucide="chevron-right"></i></a>
+      <a href="#meeting"><i data-lucide="video"></i>Professional Meeting<i data-lucide="chevron-right"></i></a>
+      <a href="#assessment"><i data-lucide="clipboard-list"></i>Online Assessment<i data-lucide="chevron-right"></i></a>
+      <a href="#phone"><i data-lucide="phone"></i>Phone Interview<i data-lucide="chevron-right"></i></a>
+      <a href="#resources"><i data-lucide="archive"></i>Resource Hub<i data-lucide="chevron-right"></i></a>
+    </nav>
+    <div class="copilot-nav-group">
+      <span>New Features</span>
+      <a href="#duo"><i data-lucide="users"></i>ApplyVanta Duo <em>BETA</em></a>
+      <a href="#launchpad"><i data-lucide="rocket"></i>Career Launchpad</a>
+    </div>
+    <div class="copilot-nav-group">
+      <span>History</span>
+      <a href="app/history/index.html"><i data-lucide="history"></i>Session History</a>
+    </div>
+  </aside>
 
-  <main>
-    <section class="page-hero">
-      <div class="container" data-reveal>
-        <span class="eyebrow"><i data-lucide="radio"></i> Live Demo</span>
-        <h1>Set up a visible interview coach session.</h1>
-        <p class="lead">Save your resume, choose the role and model, then start a practice room with screen sharing, microphone listening, and live AI replies.</p>
+  <main class="copilot-setup-main" id="demo-room">
+    <header class="setup-header">
+      <div>
+        <span class="eyebrow"><i data-lucide="radio"></i> Live Interview Copilot</span>
+        <h1>Interview Setup</h1>
       </div>
-    </section>
+      <a class="btn btn-secondary" href="index.html">Back to site</a>
+    </header>
 
-    <section class="section soft" id="demo-room">
-      <div class="container demo-panel">
-        <div class="coach-preview full-preview" data-reveal>
-          <div class="preview-top"><span class="live-dot"></span><strong>AI assistance active</strong><span>Visible to user</span></div>
-          <div class="active-banner"><i data-lucide="shield-check"></i> Transcription and coaching are active. Participants should be informed before recording or transcription begins.</div>
-          <div class="focus-widget-demo in-room">
-            <div class="focus-widget-header"><span class="live-dot"></span><strong>Focus Mode</strong><button class="focus-toggle" type="button" aria-label="Collapse focus panel"><i data-lucide="chevron-right"></i></button></div>
-            <div class="focus-widget-body"><p>Small transcript: "Walk me through your Workday reporting experience."</p><span>Audio cue ready. Presenter layout enabled.</span></div>
+    <form class="setup-flow" id="practiceSetupForm">
+      <section class="setup-step" id="interview">
+        <div class="step-marker">1</div>
+        <div class="setup-card">
+          <div class="setup-card-head">
+            <div><h2>How should AI respond?</h2><p>Use quick setup, or write exact instructions for the coaching style.</p></div>
+            <button class="compact-mode-pill" type="button"><i data-lucide="monitor"></i>Focus Mode</button>
           </div>
-          <div class="transcript-card">
-            <span>Live transcript</span>
-            <p>Interviewer: Walk me through your Workday reporting experience.</p>
-            <p>You: I built matrix and advanced reports for HR operations, then partnered with payroll and recruiting teams to validate outputs during UAT.</p>
+          <div class="response-choice-grid">
+            <label class="response-choice active">
+              <input type="radio" name="responseMode" value="Quick Setup" checked>
+              <strong>Quick Setup</strong>
+              <span>Recommended. Fill in interview info, AI handles the style.</span>
+            </label>
+            <label class="response-choice">
+              <input type="radio" name="responseMode" value="Custom Prompt">
+              <strong>Custom Prompt</strong>
+              <span>Write your own instructions to control the answer format.</span>
+            </label>
           </div>
-          <div class="suggestion-grid">
-            <div><i data-lucide="star"></i><strong>Improve answer</strong><span>Quantify volume, stakeholders, and outcome.</span></div>
-            <div><i data-lucide="brain"></i><strong>OpenAI</strong><span>Concise structure: context, action, result.</span></div>
-            <div><i data-lucide="message-square"></i><strong>Claude ready</strong><span>Add Claude later by setting an Anthropic API key.</span></div>
+          <div class="setup-grid">
+            <label>Scenario
+              <select id="scenarioSelect">
+                <option>HR / Human Resources Management</option>
+                <option>General Purpose</option>
+                <option>Software Engineering</option>
+                <option>System Design</option>
+                <option>Project Manager</option>
+                <option>Consultant</option>
+              </select>
+            </label>
+            <label>Model
+              <select id="coachModel">
+                <option>OpenAI</option>
+                <option>GPT 5.1</option>
+                <option>GPT 5.2</option>
+                <option>GPT 5.4</option>
+                <option>GPT 5.4 Mini</option>
+                <option>Sonnet 4.6</option>
+                <option>Sonnet 4.5</option>
+                <option>Haiku 4.5</option>
+                <option>Gemini 3</option>
+              </select>
+            </label>
+            <label>Company / Role Context
+              <input id="targetRole" type="text" value="Belin Health - Workday Report Builder (Contract)">
+            </label>
+            <label>Layout
+              <select id="coachLayout">
+                <option>Full coach</option>
+                <option>Focus Mode</option>
+                <option>Companion device</option>
+                <option>Presenter layout</option>
+              </select>
+            </label>
+            <label class="full">Custom Response Instructions
+              <textarea id="customPrompt" placeholder="Example: Answer in detailed STAR format. Emphasize Workday reports, dashboards, calculated fields, data validation, Prod/Sandbox, EIB, Prism, Excel, healthcare, and data-sensitive environments.">Answer interview questions in detailed STAR format. Emphasize my Workday Report Builder experience, HR/Finance reporting, Advanced/Matrix/Composite/BIRT reports, calculated fields, dashboards, data validation, Prod/Sandbox work, EIB, Prism, Excel, and healthcare/data-sensitive environments.</textarea>
+            </label>
+            <label class="full">Paste Job Description
+              <textarea id="jobDescription" placeholder="Paste the job description here."></textarea>
+            </label>
           </div>
         </div>
+      </section>
 
-        <form class="form" id="practiceSetupForm" data-reveal>
-          <div class="form-grid">
-            <label>Target Role<input id="targetRole" type="text" value="Workday HRIS Analyst"></label>
-            <label>Model<select id="coachModel"><option>Auto</option><option>OpenAI</option><option>Claude</option></select></label>
-            <label>Layout<select id="coachLayout"><option>Full coach</option><option>Focus Mode</option><option>Companion device</option><option>Presenter layout</option></select></label>
-            <label>Position<select id="coachPosition"><option>Right edge</option><option>Left edge</option><option>Second monitor</option><option>Phone/tablet</option></select></label>
-            <label class="full">Paste Job Description<textarea id="jobDescription" placeholder="Paste the job description here."></textarea></label>
-            <label class="full">Upload Resume<input id="resumeUpload" type="file" accept=".pdf,.doc,.docx,.txt"></label>
-            <div class="saved-resume full" id="savedResumePanel" hidden>
-              <div>
-                <strong id="savedResumeName">No resume saved</strong>
-                <span id="savedResumeMeta"></span>
-              </div>
-              <button class="btn btn-secondary" type="button" id="deleteResumeButton"><i data-lucide="trash-2"></i>Delete resume</button>
-            </div>
-            <label class="full consent"><input id="consentCheck" type="checkbox" required> I understand AI assistance, transcription, and coaching must be visible and consent-based.</label>
+      <section class="setup-step">
+        <div class="step-marker">2</div>
+        <div class="setup-card">
+          <div class="setup-card-head">
+            <div><h2>Documents</h2><p>Upload a resume or supporting document. The site reads it automatically and saves the extracted text with your account.</p></div>
           </div>
-          <button class="btn btn-primary" type="submit"><i data-lucide="play-circle"></i>Generate Practice Session</button>
+          <div class="document-upload-row">
+            <label>Document Type
+              <select id="documentType">
+                <option>Resume</option>
+                <option>Job Description</option>
+                <option>Portfolio Notes</option>
+              </select>
+            </label>
+            <label class="file-drop">Upload Resume
+              <input id="resumeUpload" type="file" accept=".pdf,.doc,.docx,.txt">
+              <span>PDF, DOCX, or TXT up to 10MB</span>
+            </label>
+          </div>
+          <div class="saved-resume full" id="savedResumePanel" hidden>
+            <div>
+              <strong id="savedResumeName">No document uploaded</strong>
+              <span id="savedResumeMeta"></span>
+            </div>
+            <button class="btn btn-secondary" type="button" id="deleteResumeButton"><i data-lucide="trash-2"></i>Delete</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-step">
+        <div class="step-marker">3</div>
+        <div class="setup-card">
+          <div class="setup-card-head">
+            <div><h2>Advanced</h2><p>Configure screen context, answer prep, and speech reflection.</p></div>
+            <span class="extension-ready"><span class="green-dot"></span>Extension Ready</span>
+          </div>
+          <div class="advanced-grid">
+            <label class="advanced-toggle"><span><strong>Image Analysis Context</strong><small>Help AI focus on shared-screen details and screenshots.</small></span><input type="checkbox" checked></label>
+            <label class="advanced-toggle"><span><strong>Speech Reflection</strong><small>Analyze structure, clarity, confidence, and impact.</small></span><input type="checkbox" checked></label>
+            <label class="advanced-toggle"><span><strong>Q&A Prep</strong><small>Prepare reusable answers for faster responses.</small></span><input type="checkbox"></label>
+            <label class="advanced-toggle"><span><strong>Manual Mode</strong><small>Only generate when you press Send.</small></span><input type="checkbox"></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-step">
+        <div class="step-marker">4</div>
+        <div class="setup-card">
+          <div class="setup-card-head">
+            <div><h2>Audio Input</h2><p>Choose your microphone before starting screen/audio sharing.</p></div>
+          </div>
+          <div class="audio-device-card">
+            <span class="green-dot"></span>
+            <div>
+              <small>Microphone Connected</small>
+              <strong>Microphone Array (Intel Smart Sound Technology for Digital Microphones)</strong>
+            </div>
+            <button type="button" aria-label="Audio settings"><i data-lucide="sliders-horizontal"></i></button>
+          </div>
+          <label class="full consent">
+            <input id="consentCheck" type="checkbox" required>
+            I understand AI assistance, transcription, recording, and screen sharing must be visible and consent-based.
+          </label>
+          <button class="btn btn-primary setup-start" type="submit"><i data-lucide="play-circle"></i>Start Practice Session</button>
           <p class="inline-status" id="practiceSetupStatus" aria-live="polite"></p>
-        </form>
-      </div>
-    </section>
+        </div>
+      </section>
+    </form>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div><a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a><p>Apply smarter. Interview stronger. Get hired faster.</p></div>
-      <div><h4>Product</h4><div class="footer-links"><a href="services.html">Features</a><a href="demo.html">Live Demo</a><a href="pricing.html">Pricing</a></div></div>
-      <div><h4>Trust</h4><div class="footer-links"><a href="services.html#safety">Safety</a><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div>
-      <div><h4>Contact</h4><p>Email: hello@applyvanta.ai</p></div>
-    </div>
-    <div class="container footer-bottom"><span>&copy; 2026 ApplyVanta.ai.</span><span>Visible AI assistance only.</span></div>
-  </footer>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="script.js"></script>
 </body>
