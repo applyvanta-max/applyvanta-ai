@@ -323,6 +323,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderAccountState();
 
+  const renderWorkspaceIdentity = () => {
+    const profile = store.get("applyvanta.profile", {});
+    const name = profile.name || profile.email?.split("@")[0] || "GENERAL";
+    const avatar = document.querySelector("#setupAvatar");
+    const setupName = document.querySelector("#setupUserName");
+    const setupPlan = document.querySelector("#setupUserPlan");
+    if (avatar) avatar.textContent = getInitials(name);
+    if (setupName) setupName.textContent = name;
+    if (setupPlan) setupPlan.textContent = profile.email || "Free workspace";
+  };
+
+  renderWorkspaceIdentity();
+
   const hydrateSupabaseAccount = async () => {
     const { client, user } = await getSupabaseUser();
     if (!client || !user?.email) return;
@@ -550,6 +563,9 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     const setup = {
       role: document.querySelector("#targetRole")?.value.trim() || "Interview candidate",
+      company: document.querySelector("#companyName")?.value.trim() || "",
+      userRole: document.querySelector("#userRole")?.value.trim() || "",
+      participantRole: document.querySelector("#participantRole")?.value.trim() || "",
       scenario: document.querySelector("#scenarioSelect")?.value || "General Purpose",
       responseMode: document.querySelector('input[name="responseMode"]:checked')?.value || "Quick Setup",
       customPrompt: document.querySelector("#customPrompt")?.value.trim() || "",
@@ -576,6 +592,9 @@ document.addEventListener("DOMContentLoaded", () => {
             role: setup.role,
             model: setup.model,
             job_description: [
+              setup.company ? `Company: ${setup.company}` : "",
+              setup.userRole ? `User role: ${setup.userRole}` : "",
+              setup.participantRole ? `Participant role: ${setup.participantRole}` : "",
               setup.scenario ? `Scenario: ${setup.scenario}` : "",
               setup.responseMode ? `Response mode: ${setup.responseMode}` : "",
               setup.customPrompt ? `Custom instructions: ${setup.customPrompt}` : "",
@@ -695,6 +714,9 @@ document.addEventListener("DOMContentLoaded", () => {
           message,
           transcript,
           role: sessionSetup.role || "Workday HRIS Analyst",
+          company: sessionSetup.company || "",
+          userRole: sessionSetup.userRole || "",
+          participantRole: sessionSetup.participantRole || "",
           mode: sessionSetup.model || "real-time interview coaching",
           scenario: sessionSetup.scenario || "",
           customPrompt: sessionSetup.customPrompt || "",
@@ -820,4 +842,107 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.querySelector("[data-share-confirm]")?.addEventListener("click", startLiveSession);
+
+  const completeDialog = document.querySelector("#completeDialog");
+  const completeScreen = document.querySelector("#sessionCompleteScreen");
+  const saveSessionHistory = async () => {
+    const review = document.querySelector("#sessionReview")?.value.trim() || "";
+    const history = store.get("applyvanta.sessionHistory", []);
+    const record = {
+      id: sessionSetup.sessionId || `local-${Date.now()}`,
+      type: sessionSetup.module || "Interview",
+      role: sessionSetup.userRole || sessionSetup.role || "Interview session",
+      company: sessionSetup.company || "",
+      participantRole: sessionSetup.participantRole || "",
+      scenario: sessionSetup.scenario || "",
+      status: "Completed",
+      date: new Date().toISOString(),
+      transcript: transcriptThread?.innerText || "",
+      answers: answerThread?.innerText || "",
+      review
+    };
+    store.set("applyvanta.sessionHistory", [record, ...history].slice(0, 50));
+
+    const { client } = await getSupabaseUser();
+    if (client && sessionSetup?.sessionId) {
+      await client
+        .from("sessions")
+        .update({
+          transcript: record.transcript,
+          coach_notes: [record.answers, review ? `Review: ${review}` : ""].filter(Boolean).join("\n\n")
+        })
+        .eq("id", sessionSetup.sessionId);
+    }
+  };
+
+  document.querySelector("[data-complete-open]")?.addEventListener("click", () => {
+    if (completeDialog && typeof completeDialog.showModal === "function") {
+      completeDialog.showModal();
+    }
+  });
+
+  document.querySelector("#completeSessionButton")?.addEventListener("click", async () => {
+    await saveSessionHistory();
+    completeDialog?.close();
+    if (completeScreen) {
+      completeScreen.hidden = false;
+      if (window.lucide) window.lucide.createIcons();
+    }
+  });
+
+  document.querySelector("[data-review-focus]")?.addEventListener("click", () => {
+    completeScreen.hidden = true;
+    if (completeDialog && typeof completeDialog.showModal === "function") {
+      completeDialog.showModal();
+      document.querySelector("#sessionReview")?.focus();
+    }
+  });
+
+  const renderHistoryPage = () => {
+    const list = document.querySelector("#historyList");
+    if (!list) return;
+    const history = store.get("applyvanta.sessionHistory", []);
+    const total = document.querySelector("#historyTotal");
+    const completed = document.querySelector("#historyCompleted");
+    const active = document.querySelector("#historyActive");
+    if (total) total.textContent = String(history.length);
+    if (completed) completed.textContent = String(history.filter((item) => item.status === "Completed").length);
+    if (active) active.textContent = "0";
+
+    const render = (items) => {
+      list.innerHTML = "";
+      if (!items.length) {
+        list.innerHTML = `<article class="session"><div><strong>No sessions yet</strong><p>Start an interview, meeting, or phone session to save history here.</p></div></article>`;
+        return;
+      }
+      items.forEach((item) => {
+        const article = document.createElement("article");
+        article.className = "session";
+        article.innerHTML = `
+          <span><i data-lucide="history"></i></span>
+          <div><strong>${escapeHtml(item.role)}</strong><p><i data-lucide="map-pin"></i>${escapeHtml(item.company || item.scenario || item.type)}</p></div>
+          <em>${escapeHtml(item.status)}</em>
+          <time>${new Date(item.date).toLocaleString()}</time>
+        `;
+        article.addEventListener("click", () => {
+          store.set("applyvanta.selectedHistory", item);
+          const detail = document.querySelector("#historyDetail");
+          if (detail) {
+            detail.hidden = false;
+            detail.innerHTML = `<h3>${escapeHtml(item.role)}</h3><p>${escapeHtml(item.company || "")}</p><h4>Transcript</h4><pre>${escapeHtml(item.transcript || "No transcript saved.")}</pre><h4>AI Answers</h4><pre>${escapeHtml(item.answers || "No answers saved.")}</pre>`;
+          }
+        });
+        list.append(article);
+      });
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    render(history);
+    document.querySelector("#historySearch")?.addEventListener("input", (event) => {
+      const q = event.target.value.toLowerCase();
+      render(history.filter((item) => [item.role, item.company, item.scenario, item.type].join(" ").toLowerCase().includes(q)));
+    });
+  };
+
+  renderHistoryPage();
 });

@@ -106,6 +106,9 @@ const createInterviewReply = async (payload) => {
   const message = cleanText(payload.message);
   const transcript = cleanText(payload.transcript);
   const role = cleanText(payload.role, 120) || "Workday HRIS Analyst";
+  const company = cleanText(payload.company, 120);
+  const userRole = cleanText(payload.userRole, 140);
+  const participantRole = cleanText(payload.participantRole, 120);
   const mode = cleanText(payload.mode, 80) || "Interview coach";
   const scenario = cleanText(payload.scenario, 120);
   const responseMode = cleanText(payload.responseMode, 80);
@@ -141,6 +144,9 @@ const createInterviewReply = async (payload) => {
           role: "user",
           content: [
             `Target role: ${role}`,
+            company ? `Company: ${company}` : "Company: not specified.",
+            userRole ? `User role: ${userRole}` : "User role: not specified.",
+            participantRole ? `Participant role: ${participantRole}` : "Participant role: not specified.",
             `Mode: ${mode}`,
             scenario ? `Scenario: ${scenario}` : "Scenario: not specified.",
             responseMode ? `Response mode: ${responseMode}` : "Response mode: not specified.",

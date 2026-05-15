@@ -3,322 +3,186 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ApplyVanta.ai is an AI interview assistant and meeting copilot for real-time practice, coding help, live notes, remote coaching, and post-session reports.">
-  <title>ApplyVanta.ai | AI Interview Assistant & Meeting Copilot</title>
-  <link rel="preconnect" href="https://unpkg.com">
-  <link rel="stylesheet" href="styles.css">
+  <title>Session History | ApplyVanta.ai</title>
+  <link rel="stylesheet" href="../../styles.css">
 </head>
-<body>
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a>
-      <nav class="nav-links" aria-label="Primary navigation">
-        <a class="active" href="index.html">Home</a>
-        <a href="#copilots">Copilots</a>
-        <a href="#desktop">Desktop App</a>
-        <a href="#duo">Duo</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
-      </nav>
-      <div class="nav-actions">
-        <a class="btn btn-primary" href="demo.html"><i data-lucide="play-circle"></i>Start Free</a>
-        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><i data-lucide="menu"></i></button>
-      </div>
+<body class="app-shell">
+  <aside class="app-sidebar">
+    <a class="app-logo" href="../../index.html">
+      <span class="brand-mark"><i data-lucide="sparkles"></i></span>
+      <span>ApplyVanta.ai</span>
+    </a>
+    <div class="app-profile">
+      <span class="app-avatar">R</span>
+      <span><i data-lucide="user"></i> GENERAL</span>
+      <span><i data-lucide="clock-3"></i> Unlimited</span>
     </div>
-  </header>
+    <div class="app-actions">
+      <button type="button"><i data-lucide="link"></i>Refer</button>
+      <button type="button"><i data-lucide="crown"></i>Upgrade</button>
+    </div>
+    <nav class="app-menu" aria-label="App navigation">
+      <p>AI Copilot</p>
+      <a class="active" href="#interview"><i data-lucide="layout-grid"></i>Interview<i data-lucide="chevron-right"></i></a>
+      <a href="#meeting"><i data-lucide="video"></i>Professional Meeting<i data-lucide="chevron-right"></i></a>
+      <a href="#assessment"><i data-lucide="clipboard-list"></i>Online Assessment<i data-lucide="chevron-right"></i></a>
+      <a href="#phone"><i data-lucide="phone-call"></i>Phone Interview<i data-lucide="chevron-right"></i></a>
+      <a href="#resources"><i data-lucide="archive"></i>Resource Hub<i data-lucide="chevron-right"></i></a>
+      <p>New Features</p>
+      <a class="green" href="#duo"><i data-lucide="users"></i>ApplyVanta Duo<span>Beta</span><i data-lucide="chevron-right"></i></a>
+      <a class="gold" href="#launchpad"><i data-lucide="rocket"></i>Career Launchpad<i data-lucide="chevron-right"></i></a>
+      <p>History</p>
+      <a href="#history"><i data-lucide="history"></i>Session History<i data-lucide="chevron-right"></i></a>
+    </nav>
+    <button class="sidebar-collapse" type="button" aria-label="Collapse sidebar"><i data-lucide="chevron-left"></i></button>
+  </aside>
 
-  <main>
-    <section class="clone-hero">
-      <div class="container clone-hero-grid">
-        <div class="clone-hero-copy" data-reveal>
-          <span class="eyebrow"><i data-lucide="radio"></i> Real-time interview and meeting copilot</span>
-          <h1>Your live coach for interviews, coding rounds, and career conversations.</h1>
-          <p>ApplyVanta.ai listens when you enable it, turns conversations into clear guidance, helps you structure answers, supports coding practice, and gives you reports you can use to improve every session.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="demo.html"><i data-lucide="rocket"></i>Start For Free</a>
-            <a class="btn btn-secondary" href="#copilots"><i data-lucide="layout-grid"></i>Explore Features</a>
-          </div>
-          <p class="microcopy">Free to start. No credit card required.</p>
-          <div class="avatar-proof" aria-label="Customer rating">
-            <div class="avatar-stack">
-              <span>AV</span><span>PM</span><span>DS</span><span>SE</span>
-            </div>
-            <strong>4.8</strong>
-            <span>2,700+ practice reviews</span>
-          </div>
+  <main class="app-main">
+    <div class="app-status">C.F preparing for a Workday Reporting interview</div>
+    <button class="focus-mode-btn" type="button"><i data-lucide="monitor"></i>Focus Mode</button>
+
+    <section class="copilot-hero" id="interview">
+      <div class="hero-title-row">
+        <i data-lucide="settings"></i>
+        <h1>Live Interview Copilot</h1>
+      </div>
+      <div class="copilot-tabs" role="tablist" aria-label="Copilot modes">
+        <button class="active" type="button">Live</button>
+        <button type="button">Mock</button>
+        <button type="button">Coding</button>
+      </div>
+    </section>
+
+    <div class="preset-row">
+      <label class="app-search"><i data-lucide="bookmark"></i><input type="search" placeholder="Search saved presets or recent sessions..."></label>
+      <button class="outline-cyan" type="button"><i data-lucide="bookmark-plus"></i>Save Preset</button>
+    </div>
+
+    <section class="timeline-section">
+      <div class="step-marker"><span>1</span></div>
+      <div class="section-title-row">
+        <h2>Interview Setup</h2>
+        <button class="icon-square" type="button" aria-label="Collapse interview setup"><i data-lucide="chevron-up"></i></button>
+      </div>
+      <div class="app-card setup-card">
+        <h3>How should AI respond?</h3>
+        <div class="setup-grid">
+          <button type="button">
+            <strong>Quick Setup</strong>
+            <span>Fill in your interview info, AI handles the rest.</span>
+            <em>Recommended</em>
+          </button>
+          <button class="selected" type="button">
+            <strong>Custom Prompt</strong>
+            <span>Write your own instructions to control how AI responds.</span>
+          </button>
         </div>
-        <div class="live-product-shell" data-reveal aria-label="ApplyVanta.ai live assistant preview">
-          <div class="app-window-bar">
-            <span></span><span></span><span></span>
-            <strong>ApplyVanta.ai live session</strong>
-          </div>
-          <div class="session-status">
-            <span><i class="live-dot"></i> Coaching active</span>
-            <span>116ms avg response</span>
-          </div>
-          <div class="live-question">
-            <small>Interviewer</small>
-            <p>Tell me about a time you handled a difficult technical problem with limited information.</p>
-          </div>
-          <div class="answer-card">
-            <div>
-              <span class="badge">STAR answer</span>
-              <span class="badge soft-badge">Concise mode</span>
-            </div>
-            <p>Start with the situation, name the constraint, explain your action, and close with a measurable result. Keep the first answer under 60 seconds, then offer detail if they ask.</p>
-          </div>
-          <div class="coach-metrics">
-            <div><strong>1M+</strong><span>users reached</span></div>
-            <div><strong>50+</strong><span>languages</span></div>
-            <div><strong>8</strong><span>coach modes</span></div>
-          </div>
+        <div class="field-block">
+          <div><span>Select Prompt</span><button type="button"><i data-lucide="square-pen"></i>Manage</button></div>
+          <select>
+            <option>Workday Report Builder</option>
+            <option>Senior HRIS Analyst</option>
+            <option>Payroll Reconciliation</option>
+          </select>
+        </div>
+        <div class="field-block">
+          <span>Prompt Preview</span>
+          <textarea readonly>Use Workday Report Builder with business objects, data sources, calculated fields, and filters.
+Partner with HR and stakeholders to gather requirements and deliver reporting solutions.
+Build dashboards and provide actionable insights for leadership.
+Ensure data accuracy, validation, and reporting consistency.</textarea>
         </div>
       </div>
     </section>
 
-    <section class="section" id="copilots">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="section-kicker">Core features</span>
-          <h2>AI tools that work while you practice, present, or review.</h2>
-          <p>Answers, code guidance, assessment support, meeting notes, and human helper sessions in one career platform.</p>
+    <section class="timeline-section">
+      <div class="step-marker"><span>2</span></div>
+      <div class="section-title-row">
+        <h2>Documents</h2>
+        <div class="title-actions">
+          <button class="icon-square" type="button" aria-label="Upload document"><i data-lucide="upload"></i></button>
+          <button class="icon-square" type="button" aria-label="Collapse documents"><i data-lucide="chevron-up"></i></button>
         </div>
-        <div class="feature-mosaic">
-          <article class="feature-tile large" data-reveal>
-            <span class="icon"><i data-lucide="messages-square"></i></span>
-            <h3>Interview Copilot</h3>
-            <p>Real-time answer outlines, follow-up prompts, behavioral coaching, role-specific language, and post-session feedback.</p>
-          </article>
-          <article class="feature-tile" data-reveal>
-            <span class="icon"><i data-lucide="code-2"></i></span>
-            <h3>Coding Assistant</h3>
-            <p>Algorithm breakdowns, edge cases, complexity notes, debug help, and clean explanation prompts.</p>
-          </article>
-          <article class="feature-tile" data-reveal>
-            <span class="icon"><i data-lucide="users"></i></span>
-            <h3>Remote Assist</h3>
-            <p>Invite a trusted helper to your private prep room for notes, suggestions, and consent-based assistance.</p>
-          </article>
-          <article class="feature-tile" data-reveal>
-            <span class="icon"><i data-lucide="file-check-2"></i></span>
-            <h3>Online Assessment Prep</h3>
-            <p>Practice prompts modeled after screening tools, timed answers, audio input, and question-type review.</p>
-          </article>
-          <article class="feature-tile" data-reveal>
-            <span class="icon"><i data-lucide="bar-chart-3"></i></span>
-            <h3>Performance Reports</h3>
-            <p>Scores for clarity, structure, technical depth, confidence, filler words, and next practice areas.</p>
-          </article>
+      </div>
+      <div class="app-card docs-card">
+        <h3>3 documents uploaded</h3>
+        <label class="app-search"><input type="search" placeholder="Search documents..."></label>
+        <div class="doc-table">
+          <div class="doc-head"><span></span><span>Name</span><span>Type</span><span>Time</span><span>View</span><span>Delete</span></div>
+          <div><input type="checkbox"><span><i data-lucide="file"></i>BHUVAN CHANDRA KASARAPU_BCBSn...</span><span>resume</span><span>5/13/2026</span><button><i data-lucide="download"></i></button><button class="danger"><i data-lucide="trash-2"></i></button></div>
+          <div><input type="checkbox"><span><i data-lucide="file"></i>Bhuvan_Kasarapu_2026.pdf</span><span>resume</span><span>5/12/2026</span><button><i data-lucide="download"></i></button><button class="danger"><i data-lucide="trash-2"></i></button></div>
+          <div><input type="checkbox"><span><i data-lucide="file"></i>Ruchitha Balerao w c (1).docx</span><span>resume</span><span>5/6/2026</span><button><i data-lucide="download"></i></button><button class="danger"><i data-lucide="trash-2"></i></button></div>
         </div>
       </div>
     </section>
 
-    <section class="section soft">
-      <div class="container setup-grid">
-        <div class="section-head" data-reveal>
-          <span class="section-kicker">Simple setup</span>
-          <h2>Get from account to practice room in minutes.</h2>
-          <p>Create an account, tell ApplyVanta.ai your target role, practice live scenarios, then review a focused improvement report.</p>
-          <a class="btn btn-primary" href="demo.html"><i data-lucide="user-plus"></i>Get Started Free</a>
-        </div>
-        <form class="signup-preview" id="accountForm" data-reveal>
-          <div class="url-pill">app.applyvanta.ai</div>
-          <label>Email<input id="accountEmail" type="email" value="" placeholder="you@example.com" required aria-label="Email"></label>
-          <label>Password<input id="accountPassword" type="password" value="" placeholder="Create a password" required aria-label="Password"></label>
-          <label>Full name<input id="accountName" type="text" placeholder="Enter your name" required aria-label="Full name"></label>
-          <button class="btn btn-primary" type="submit">Create account</button>
-          <p class="inline-status" id="accountStatus" aria-live="polite"></p>
-        </form>
-        <div class="setup-steps" data-reveal>
-          <article><span>01</span><h3>Create Free Account</h3><p>Sign up quickly with no credit card required.</p></article>
-          <article><span>02</span><h3>Configure Profile</h3><p>Set your role, target company, experience level, and interview format.</p></article>
-          <article><span>03</span><h3>Practice or Go Live</h3><p>Use mock sessions, meeting notes, coding help, or consent-based live coaching.</p></article>
-          <article><span>04</span><h3>Review & Improve</h3><p>Get a session report with scores, examples, and next drills.</p></article>
-        </div>
+    <section class="timeline-section">
+      <div class="step-marker"><span>3</span></div>
+      <div class="section-title-row">
+        <h2>Advanced</h2>
+        <button class="icon-square" type="button" aria-label="Collapse advanced"><i data-lucide="chevron-up"></i></button>
+      </div>
+      <div class="app-card advanced-card">
+        <div class="ready-row"><span class="green-dot"></span>Extension Ready</div>
+        <button class="model-row" type="button" data-open-models><span><i data-lucide="bot"></i><em>Model</em><strong>GPT 5.1</strong></span><i data-lucide="sliders-horizontal"></i></button>
+        <div class="advanced-line"><div><h3>Image Analysis Context</h3><p>Help the AI focus on specific details in screenshots.</p></div><button type="button"><i data-lucide="plus"></i>Add</button></div>
+        <div class="advanced-line"><div><h3>Speech Reflection <i data-lucide="circle-help"></i></h3><p>Analyzes structure, clarity, confidence, and impact.</p></div><label class="switch"><input type="checkbox"><span></span></label></div>
+        <div class="advanced-line"><div><h3>Q&A Prep <i data-lucide="circle-help"></i></h3><p>Prepare answers in advance for faster, more confident responses.</p></div><button type="button"><i data-lucide="pencil"></i>Configure</button></div>
       </div>
     </section>
 
-    <section class="section app-band" id="desktop">
-      <div class="container desktop-grid">
-        <div class="section-head" data-reveal>
-          <span class="section-kicker">Desktop app</span>
-          <h2>A focused workspace for private prep and consent-based meeting support.</h2>
-          <p>Use a compact coach window, keyboard shortcuts, editor integration, and a transparent active state that keeps you in control of when AI assistance is running.</p>
-          <div class="platform-pills"><span>macOS</span><span>Windows</span><span>Web App</span></div>
-        </div>
-        <div class="desktop-panel" data-reveal>
-          <article><span>01 / FOCUS</span><h3>Background Practice Mode</h3><p>Keep prep notes and prompts ready without cluttering your workspace.</p></article>
-          <article><span>02 / OVERLAY</span><h3>Compact Coach Panel</h3><p>Pin guidance beside your active window and collapse it when you need more space.</p></article>
-          <article><span>03 / SHORTCUTS</span><h3>Mouse-free Activation</h3><p>Trigger capture, notes, summaries, and answer drafts with customizable shortcuts.</p></article>
-          <article><span>04 / EDITOR</span><h3>VS Code & Cursor Integration</h3><p>Send selected code to the copilot for debugging, explanation, and interview-ready narration.</p></article>
-        </div>
+    <section class="timeline-section">
+      <div class="step-marker"><span>4</span></div>
+      <div class="section-title-row">
+        <h2>Audio Input</h2>
+        <button class="icon-square" type="button" aria-label="Collapse audio input"><i data-lucide="chevron-up"></i></button>
+      </div>
+      <div class="app-card audio-card">
+        <div class="ready-row"><span class="green-dot"></span>Microphone Connected</div>
+        <div><span>Audio</span><strong>Microphone Array (Intel Smart Sound Technology for Digital Microphones)</strong></div>
+        <button type="button"><i data-lucide="sliders-horizontal"></i></button>
       </div>
     </section>
 
-    <section class="section duo-section" id="duo">
-      <div class="container duo-grid">
-        <div class="duo-visual" data-reveal>
-          <div class="person-card"><span>Helpee</span><strong>Live prep room</strong><p>Voice-to-text coaching, code review, and guided suggestions.</p></div>
-          <div class="duo-link"><i data-lucide="link"></i></div>
-          <div class="person-card helper"><span>Helper</span><strong>Trusted remote coach</strong><p>Shares tips and examples only inside the private session.</p></div>
-        </div>
-        <div class="section-head" data-reveal>
-          <span class="section-kicker">ApplyVanta Duo</span>
-          <h2>Never practice alone.</h2>
-          <p>Invite a friend, mentor, or tutor into a private helper session so they can see the same context, send instant tips, and help you improve with your permission.</p>
-          <div class="duo-steps">
-            <article><span>01 / Invite</span><h3>Share one session link</h3></article>
-            <article><span>02 / Tips</span><h3>Get live hints as you talk</h3></article>
-            <article><span>03 / Audio</span><h3>Review transcripts on the fly</h3></article>
-            <article><span>04 / Assist</span><h3>Approve hands-on guidance when appropriate</h3></article>
-          </div>
-        </div>
+    <div class="start-row">
+      <span>Go</span>
+      <button type="button" data-start-session>Start</button>
+    </div>
+
+    <section class="history-panel" id="history">
+      <h2>History</h2>
+      <div class="history-stats">
+        <span><i data-lucide="activity"></i><strong id="historyTotal">0</strong>Total</span>
+        <span><i data-lucide="trending-up"></i><strong id="historyCompleted">0</strong>Done</span>
+        <span><i data-lucide="zap"></i><strong id="historyActive">0</strong>Active</span>
       </div>
+      <label class="app-search large"><i data-lucide="search"></i><input id="historySearch" type="search" placeholder="Search sessions by role, company, or type..."></label>
+      <h3><i data-lucide="clock"></i>Recent</h3>
+      <div class="session-list" id="historyList"></div>
+      <div class="history-detail" id="historyDetail" hidden></div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="section-kicker">Why ApplyVanta.ai</span>
-          <h2>Built for every interview format and career stage.</h2>
-        </div>
-        <div class="why-grid">
-          <article data-reveal><i data-lucide="languages"></i><h3>Multilingual</h3><p>Practice across 50+ languages with fast transcript and answer generation.</p></article>
-          <article data-reveal><i data-lucide="brain-circuit"></i><h3>Advanced AI Models</h3><p>Switch between concise, deep, coding, and natural coaching modes.</p></article>
-          <article data-reveal><i data-lucide="message-circle-heart"></i><h3>Built by Users</h3><p>Rank feature requests by impact and shape the roadmap with the community.</p></article>
-          <article data-reveal><i data-lucide="briefcase-business"></i><h3>Career Ecosystem</h3><p>Resume checks, job search workflows, interview prep, and post-session reports.</p></article>
-          <article data-reveal><i data-lucide="monitor-smartphone"></i><h3>Practice Anywhere</h3><p>Use web, desktop, tablet, or phone depending on your prep setup.</p></article>
-          <article data-reveal><i data-lucide="git-branch"></i><h3>Dual-layer Support</h3><p>Combine AI copilot guidance with trusted human helper sessions.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section soft">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="section-kicker">Scenarios</span>
-          <h2>Supports every interview scenario.</h2>
-          <p>From system design to sales calls, ApplyVanta.ai adapts to the format, role, and industry you choose.</p>
-        </div>
-        <div class="scenario-grid">
-          <article data-reveal><span>Architecture</span><h3>System Design Interviews</h3></article>
-          <article data-reveal><span>Engineering</span><h3>Software Engineering Interviews</h3></article>
-          <article data-reveal><span>Operations</span><h3>Project Management</h3></article>
-          <article data-reveal><span>Data</span><h3>Analytics & BI Roles</h3></article>
-          <article data-reveal><span>People</span><h3>HRIS & Workday</h3></article>
-          <article data-reveal><span>Revenue</span><h3>Sales & Customer Success</h3></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section integrations-section">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="section-kicker">Integrations</span>
-          <h2>Works with common meeting and practice platforms.</h2>
-          <p>Prepare for Zoom, Google Meet, Microsoft Teams, HireVue-style screens, CodeSignal-style practice, and technical editor workflows.</p>
-        </div>
-        <div class="integration-row" data-reveal>
-          <span>Zoom</span><span>Google Meet</span><span>Microsoft Teams</span><span>HireVue</span><span>CodeSignal</span><span>HackerRank</span><span>VS Code</span><span>Cursor</span>
-        </div>
-        <p class="fine-print">Use recording, transcription, and live assistance only where permitted by the platform, organization, and participants involved.</p>
-      </div>
-    </section>
-
-    <section class="section dark comparison-section">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="section-kicker">Comparison</span>
-          <h2>Not all AI interview tools are the same.</h2>
-          <p>ApplyVanta.ai combines real-time coaching, practice workflows, helper sessions, coding support, and reports in one branded platform.</p>
-        </div>
-        <div class="comparison-table" data-reveal>
-          <div class="comparison-head"><span>Capability</span><span>ApplyVanta.ai</span><span>Generic AI</span><span>Traditional Prep</span></div>
-          <div><span>Real-time answer coaching</span><strong>Yes</strong><em>Limited</em><em>No</em></div>
-          <div><span>Human helper session</span><strong>Yes</strong><em>No</em><em>Varies</em></div>
-          <div><span>Coding interview support</span><strong>Yes</strong><em>Partial</em><em>Partial</em></div>
-          <div><span>50+ language practice</span><strong>Yes</strong><em>Varies</em><em>No</em></div>
-          <div><span>Post-interview performance report</span><strong>Yes</strong><em>Limited</em><em>Manual</em></div>
-          <div><span>Career toolkit included</span><strong>Yes</strong><em>No</em><em>No</em></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="pricing">
-      <div class="container pricing-split">
-        <div class="section-head" data-reveal>
-          <span class="section-kicker">Pricing</span>
-          <h2>Is ApplyVanta.ai free?</h2>
-          <p>Yes. New users can start with free access for core interview practice. Premium plans add deeper reports, longer sessions, advanced coding help, and more team or helper features.</p>
-          <a class="btn btn-primary" href="pricing.html"><i data-lucide="badge-dollar-sign"></i>View Plans</a>
-        </div>
-        <article class="free-card" data-reveal>
-          <span class="badge">Free to start</span>
-          <h3>No credit card required</h3>
-          <ul class="check-list">
-            <li><i data-lucide="check"></i>Core mock interview access</li>
-            <li><i data-lucide="check"></i>Resume and JD review preview</li>
-            <li><i data-lucide="check"></i>Basic answer coaching</li>
-            <li><i data-lucide="check"></i>Upgrade when you need advanced reports</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section class="section soft" id="faq">
-      <div class="container faq-layout">
-        <div class="section-head" data-reveal>
-          <span class="section-kicker">Support</span>
-          <h2>Frequently asked questions.</h2>
-          <p>Quick answers for setup, browsers, desktop requirements, credits, helper sessions, and career tools.</p>
-        </div>
-        <div class="faq" data-reveal>
-          <div class="faq-item open">
-            <button class="faq-question" type="button">Web app system requirements <i data-lucide="chevron-down"></i></button>
-            <div class="faq-answer"><p>Use a modern Chromium browser such as Chrome, Edge, Opera, or Brave. For meetings, confirm system audio and screen sharing permissions before the session.</p></div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question" type="button">Desktop app system requirements <i data-lucide="chevron-down"></i></button>
-            <div class="faq-answer"><p>ApplyVanta.ai is designed for current Windows and macOS devices. Keep your browser and operating system updated for the most reliable audio capture and shortcut behavior.</p></div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question" type="button">What industries are supported? <i data-lucide="chevron-down"></i></button>
-            <div class="faq-answer"><p>Software engineering, finance, consulting, marketing, customer success, sales, product, HRIS, Workday, IT, cybersecurity, analytics, and more.</p></div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question" type="button">Can a friend help during practice? <i data-lucide="chevron-down"></i></button>
-            <div class="faq-answer"><p>Yes. Duo lets a trusted helper join a private prep session, view shared context, and send guidance while you remain in control.</p></div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-question" type="button">How do credits work? <i data-lucide="chevron-down"></i></button>
-            <div class="faq-answer"><p>Credits can be used for session minutes, advanced reports, and premium tools depending on the plan you select.</p></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section creator-cta">
-      <div class="container cta-band" data-reveal>
-        <div>
-          <span class="section-kicker">Become a creator</span>
-          <h2>Earn by teaching candidates how to prepare better.</h2>
-          <p>Build templates, role packs, walkthroughs, and practice paths for the ApplyVanta.ai community.</p>
-        </div>
-        <a class="btn btn-light" href="contact.html"><i data-lucide="send"></i>Partner With Us</a>
-      </div>
-    </section>
+    <div class="floating-help">
+      <button type="button"><i data-lucide="play"></i>Tutorial</button>
+      <button type="button"><i data-lucide="circle-help"></i>Info</button>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div><a class="brand" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>ApplyVanta.ai</span></a><p>Your live coach for interviews, coding rounds, and career conversations.</p></div>
-      <div><h4>Product</h4><div class="footer-links"><a href="#copilots">Interview Copilot</a><a href="#desktop">Desktop App</a><a href="#duo">Duo</a><a href="pricing.html">Pricing</a></div></div>
-      <div><h4>Resources</h4><div class="footer-links"><a href="services.html">Features</a><a href="demo.html">Live Demo</a><a href="#faq">FAQ</a><a href="contact.html">Contact</a></div></div>
-      <div><h4>Contact</h4><p>Email: hello@applyvanta.ai<br>Visible, consent-based AI assistance.</p></div>
-    </div>
-    <div class="container footer-bottom"><span>&copy; 2026 ApplyVanta.ai. All rights reserved.</span><span>Free to start. No credit card required.</span></div>
-  </footer>
+  <dialog class="model-dialog" id="modelDialog">
+    <form method="dialog">
+      <div class="dialog-head"><h2>Select Model</h2><button type="submit" aria-label="Close model picker"><i data-lucide="x"></i></button></div>
+      <button class="selected" type="button"><i data-lucide="bot"></i>GPT 5.1<i data-lucide="search"></i><span></span></button>
+      <button type="button"><i data-lucide="bot"></i>GPT 5.2<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="bot"></i>GPT 5.4<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="bot"></i>GPT 5.4 Mini<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="sparkle"></i>Sonnet 4.6<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="sparkle"></i>Sonnet 4.5<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="sparkle"></i>Haiku 4.5<i data-lucide="search"></i></button>
+      <button type="button"><i data-lucide="gem"></i>Gemini 3<i data-lucide="search"></i></button>
+    </form>
+  </dialog>
+
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="script.js"></script>
+  <script src="../../script.js"></script>
 </body>
 </html>

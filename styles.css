@@ -3025,6 +3025,268 @@ body.copilot-setup-shell {
   }
 }
 
+/* Dark product-mode override for copilot setup */
+body.copilot-setup-shell {
+  background: #111a2b;
+  color: #f8fbff;
+}
+
+.copilot-sidebar {
+  background: #263548;
+  border-right-color: #33465d;
+  box-shadow: none;
+}
+
+.copilot-logo,
+.copilot-nav a,
+.copilot-nav-group a,
+.setup-grid label,
+.document-upload-row label {
+  color: #f8fbff;
+}
+
+.copilot-user,
+.copilot-nav a.active,
+.copilot-nav a:hover,
+.copilot-nav-group a:hover {
+  background: #244f60;
+  color: #22d3ee;
+}
+
+.copilot-user > span {
+  background: #6f4d3d;
+}
+
+.app-actions button,
+.compact-mode-pill,
+.audio-device-card button {
+  border-color: #42536b;
+  background: #34445a;
+  color: #f8fbff;
+}
+
+.setup-card {
+  background: #172337;
+  border-color: #263a52;
+  box-shadow: none;
+}
+
+.setup-card p,
+.copilot-user small,
+.copilot-nav-group span,
+.response-choice span,
+.advanced-toggle small,
+.file-drop span {
+  color: #95a3b8;
+}
+
+.response-choice,
+.advanced-toggle,
+.audio-device-card,
+.file-drop,
+.saved-resume {
+  background: #111a2b;
+  border-color: #263a52;
+}
+
+.response-choice.active,
+.response-choice:has(input:checked) {
+  border-color: #22d3ee;
+  background: #123044;
+}
+
+.setup-grid input,
+.setup-grid select,
+.setup-grid textarea,
+.document-upload-row select,
+.document-upload-row input {
+  background: #0e1726;
+  border-color: #31445d;
+  color: #f8fbff;
+}
+
+.step-marker {
+  background: #1c2a3d;
+  border-color: #33465d;
+  color: #22d3ee;
+}
+
+.setup-header .btn-secondary {
+  background: #34445a;
+  color: #f8fbff;
+}
+
+.complete-dialog {
+  width: min(520px, calc(100vw - 32px));
+  border: 1px solid #cbe5dd;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.complete-dialog form {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+.complete-dialog textarea {
+  min-height: 120px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #b8d8d0;
+  border-radius: 8px;
+}
+
+.complete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.complete-actions button,
+.session-complete-screen a,
+.session-complete-screen button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #b8d8d0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.complete-actions .complete-primary,
+.session-complete-screen a,
+.session-complete-screen button {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.session-complete-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: rgba(243, 251, 248, 0.96);
+  color: #102026;
+}
+
+.session-complete-screen[hidden] {
+  display: none;
+}
+
+.session-complete-screen > div {
+  width: min(680px, calc(100vw - 32px));
+  padding: 36px;
+  border: 1px solid #cbe5dd;
+  border-radius: 8px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(7, 91, 78, 0.14);
+}
+
+.session-complete-screen svg {
+  width: 54px;
+  height: 54px;
+  color: #0f766e;
+}
+
+.session-complete-screen div div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.history-detail {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(14, 190, 232, 0.22);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.66);
+}
+
+.history-detail pre {
+  overflow: auto;
+  white-space: pre-wrap;
+  color: #d6e4f0;
+}
+
+/* Final dark live-session theme */
+body.session-shell {
+  background: #101827;
+  color: #f8fbff;
+}
+
+body.session-shell .session-topbar {
+  background: #1b2a3d;
+  border-bottom-color: #273a52;
+  color: #f8fbff;
+}
+
+body.session-shell .session-grid,
+body.session-shell .answer-pane,
+body.session-shell .screen-pane {
+  background: #101827;
+}
+
+body.session-shell .answer-empty,
+body.session-shell .coach-message,
+body.session-shell .transcript-entry,
+body.session-shell .session-document-strip {
+  background: #172337;
+  border-color: #263a52;
+  color: #f8fbff;
+}
+
+body.session-shell .coach-message strong,
+body.session-shell .transcript-entry strong,
+body.session-shell .session-document-strip strong,
+body.session-shell .screen-head {
+  color: #67e8f9;
+}
+
+body.session-shell .coach-message p,
+body.session-shell .transcript-entry p,
+body.session-shell .answer-empty p,
+body.session-shell .session-document-strip span,
+body.session-shell .transcript-empty {
+  color: #d6e4f0;
+}
+
+body.session-shell .session-composer {
+  background: rgba(23, 35, 55, 0.96);
+  border-color: #263a52;
+}
+
+body.session-shell .session-composer input {
+  background: #0b1220;
+  color: #f8fbff;
+  border-color: #30435b;
+}
+
+body.session-shell .session-composer button:not(:disabled),
+body.session-shell .session-help button,
+body.session-shell .session-actions .audio-start {
+  background: #0e7490;
+  color: #ffffff;
+}
+
+body.session-shell .session-tools button,
+body.session-shell .session-actions button {
+  color: #22d3ee;
+}
+
+body.session-shell .session-popover {
+  background: #172337;
+  border-color: #30435b;
+  color: #f8fbff;
+}
+
 .session-document-strip {
   position: relative;
   z-index: 1;

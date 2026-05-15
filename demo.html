@@ -10,8 +10,12 @@
   <aside class="copilot-sidebar">
     <a class="copilot-logo" href="index.html"><span class="brand-mark"><i data-lucide="sparkles"></i></span><strong>ApplyVanta.ai</strong></a>
     <div class="copilot-user">
-      <span>R</span>
-      <div><strong>GENERAL</strong><small>Visible copilot</small></div>
+      <span id="setupAvatar">R</span>
+      <div><strong id="setupUserName">GENERAL</strong><small id="setupUserPlan">Free workspace</small></div>
+    </div>
+    <div class="app-actions">
+      <button type="button"><i data-lucide="link"></i>Refer</button>
+      <button type="button"><i data-lucide="crown"></i>Upgrade</button>
     </div>
     <nav class="copilot-nav" aria-label="Copilot sections">
       <a class="active" href="#interview"><i data-lucide="layout-grid"></i>Interview<i data-lucide="chevron-right"></i></a>
@@ -86,6 +90,15 @@
             </label>
             <label>Company / Role Context
               <input id="targetRole" type="text" value="Belin Health - Workday Report Builder (Contract)">
+            </label>
+            <label>Company
+              <input id="companyName" type="text" value="Belin Health">
+            </label>
+            <label>Your Role
+              <input id="userRole" type="text" value="Workday Report Builder Contract">
+            </label>
+            <label>Participant Role
+              <input id="participantRole" type="text" value="HR Manager">
             </label>
             <label>Layout
               <select id="coachLayout">
@@ -170,6 +183,26 @@
           </label>
           <button class="btn btn-primary setup-start" type="submit"><i data-lucide="play-circle"></i>Start Practice Session</button>
           <p class="inline-status" id="practiceSetupStatus" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="setup-step" id="meeting">
+        <div class="step-marker">M</div>
+        <div class="setup-card module-card">
+          <div class="setup-card-head">
+            <div><h2>Professional Meeting</h2><p>Use the same documents and AI context with a meeting-focused tone for stakeholders, clients, HR calls, and business discussions.</p></div>
+            <button class="compact-mode-pill" type="button"><i data-lucide="video"></i>Meeting Mode</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-step" id="phone">
+        <div class="step-marker">P</div>
+        <div class="setup-card module-card">
+          <div class="setup-card-head">
+            <div><h2>Phone Interview</h2><p>Voice-first mode skips screen sharing and uses microphone transcription, resume context, and typed backup questions.</p></div>
+            <button class="compact-mode-pill" type="button"><i data-lucide="phone"></i>Voice Only</button>
+          </div>
         </div>
       </section>
     </form>
