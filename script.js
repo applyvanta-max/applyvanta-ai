@@ -115,7 +115,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.querySelector(".audio-start")?.addEventListener("mouseenter", () => {
-    document.querySelector(".audio-start span").textContent = "Start";
+    const startButton = document.querySelector(".audio-start");
+    const label = startButton?.querySelector("span");
+    if (label && !startButton?.classList.contains("recording")) label.textContent = "Start";
   });
 
   document.querySelector("[data-share-open]")?.addEventListener("click", () => {
@@ -352,6 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
       createdAt: user.created_at || new Date().toISOString()
     });
     renderAccountState();
+    renderWorkspaceIdentity();
   };
 
   hydrateSupabaseAccount();
@@ -410,6 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       renderAccountState();
+      renderWorkspaceIdentity();
       setStatusText(accountStatus, "Account ready. Opening setup...");
       setTimeout(() => {
         window.location.href = "demo.html#demo-room";
@@ -424,6 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await client?.auth.signOut();
     store.remove("applyvanta.profile");
     renderAccountState();
+    renderWorkspaceIdentity();
   });
 
   const practiceForm = document.querySelector("#practiceSetupForm");

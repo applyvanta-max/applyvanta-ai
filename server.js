@@ -69,20 +69,89 @@ const cleanText = (value, max = 4000) =>
     .trim()
     .slice(0, max);
 
-const localCoachReply = ({ message, role }) => {
+const collectHighlights = (...sources) => {
+  const text = sources.map((source) => cleanText(source, 5000).toLowerCase()).join(" ");
+  const knownTerms = [
+    ["Workday HCM", /workday|hcm/],
+    ["Advanced, Matrix, Composite, and BIRT reports", /advanced|matrix|composite|birt/],
+    ["calculated fields", /calculated field/],
+    ["dashboards", /dashboard/],
+    ["HR and Finance reporting", /hr|human resources|finance/],
+    ["Prod/Sandbox validation", /prod|sandbox|validation|uat/],
+    ["EIB, Prism, and integration support", /eib|prism|integration|core connector|studio|rest|soap/],
+    ["Excel analysis", /excel|pivot|vlookup|xlookup/],
+    ["stakeholder requirement gathering", /stakeholder|requirement|gathering|business partner/],
+    ["healthcare or data-sensitive environments", /healthcare|sensitive|regulated|hipaa|confidential/]
+  ];
+
+  const highlights = knownTerms
+    .filter(([, pattern]) => pattern.test(text))
+    .map(([label]) => label);
+
+  return highlights.length ? highlights.slice(0, 6) : ["role-specific examples", "measurable outcomes", "clear stakeholder communication"];
+};
+
+const localCoachReply = ({
+  message,
+  role,
+  company,
+  userRole,
+  participantRole,
+  customPrompt,
+  jobDescription,
+  resumeText
+}) => {
   const topic = cleanText(message, 240) || "the latest question";
   const targetRole = cleanText(role, 80) || "this role";
+  const companyName = cleanText(company, 80);
+  const userTitle = cleanText(userRole, 100) || targetRole;
+  const listener = cleanText(participantRole, 80) || "the interviewer";
+  const highlights = collectHighlights(resumeText, jobDescription, customPrompt);
+  const highlightLine = highlights.join(", ");
+  const lowerTopic = topic.toLowerCase();
+
+  if (/tell\s+(me\s+)?(about|abt)\s+(yourself|your self)|introduce yourself|walk me through your background/.test(lowerTopic)) {
+    return [
+      `Ready-to-say answer for ${userTitle}${companyName ? ` at ${companyName}` : ""}:`,
+      "",
+      `Sure. I am a ${userTitle} with a strong focus on turning HR and business reporting needs into accurate, usable Workday outputs. My background includes ${highlightLine}, and I am used to working with stakeholders to understand what they actually need from the data, not just what fields they ask for.`,
+      "",
+      "In my recent work, I have focused on building reliable reports, validating results across environments, documenting assumptions, and making sure HR or Finance teams can trust the numbers before they use them for decisions. I also pay close attention to data sensitivity, report security, and repeatable testing because those details matter in HR systems.",
+      "",
+      `For this conversation with ${listener}, I would position myself as someone who can combine Workday reporting depth with clear communication: gather requirements, build the right report or dashboard, validate it with business users, and explain the result in a way the team can act on.`,
+      "",
+      "Strong closer: I can go deeper into a specific reporting example, calculated field challenge, or stakeholder project if that would be useful."
+    ].join("\n");
+  }
+
+  if (/workday|report|dashboard|calculated|matrix|composite|birt|eib|prism|integration|data/.test(lowerTopic)) {
+    return [
+      `Use this STAR answer for ${targetRole}:`,
+      "",
+      "Situation: In a Workday reporting request, the business needed a reliable way to see HR or Finance data without manually reconciling multiple exports.",
+      "",
+      "Task: I owned the reporting analysis from requirements through validation. That meant clarifying the audience, identifying the right data sources, building the report logic, and making sure the output matched what stakeholders expected.",
+      "",
+      `Action: I used my experience with ${highlightLine} to build the report, test the calculated fields, compare results between environments, and review edge cases with the business team. I also documented the assumptions so the report could be maintained later.`,
+      "",
+      "Result: The team received a cleaner, more repeatable report that reduced manual checking and gave stakeholders more confidence in the data. I would quantify this with the exact time saved, defect reduction, or adoption result from your real project.",
+      "",
+      "Follow-up: I can also explain the technical design behind the report if you want the Workday details."
+    ].join("\n");
+  }
 
   return [
-    `For ${targetRole}, answer this with a tight STAR structure.`,
+    `Suggested answer for ${targetRole}${companyName ? ` at ${companyName}` : ""}:`,
     "",
-    `Start: "A good example is when I had to handle ${topic.toLowerCase()} under a real constraint."`,
+    `I would answer this by connecting the question to my actual background in ${highlightLine}.`,
     "",
-    "Then cover:",
-    "- Situation: name the business problem and why it mattered.",
-    "- Task: say what you owned personally.",
-    "- Action: list 2-3 concrete steps you took.",
-    "- Result: close with a number, timeline, quality improvement, or stakeholder outcome.",
+    "A strong structure would be:",
+    "- Start with the business situation and why it mattered.",
+    "- Explain what you personally owned.",
+    "- Give 2 or 3 concrete actions you took.",
+    "- Close with a measurable result, quality improvement, timeline, or stakeholder outcome.",
+    "",
+    `Ready opening: "A good example is related to ${topic.toLowerCase()}. In that situation, I focused on understanding the business need first, then used my Workday reporting experience to build, validate, and explain a reliable solution."`,
     "",
     "Quick follow-up line: \"I can go deeper on the technical details or the collaboration side, depending on what would be most useful.\""
   ].join("\n");
@@ -121,8 +190,19 @@ const createInterviewReply = async (payload) => {
     return { reply: "Type or paste the interviewer's question first, then I can coach the answer.", provider: "local" };
   }
 
+  const localContext = {
+    message,
+    role,
+    company,
+    userRole,
+    participantRole,
+    customPrompt,
+    jobDescription,
+    resumeText
+  };
+
   if (!process.env.OPENAI_API_KEY) {
-    return { reply: localCoachReply({ message, role }), provider: "local-demo" };
+    return { reply: localCoachReply(localContext), provider: "local-demo" };
   }
 
   const response = await fetch("https://api.openai.com/v1/responses", {
@@ -169,7 +249,7 @@ const createInterviewReply = async (payload) => {
     if (/quota|billing|insufficient|credit/i.test(detail)) {
       return {
         reply: [
-          localCoachReply({ message, role }),
+          localCoachReply(localContext),
           "",
           "Note: live OpenAI replies are paused because the connected API key has no available quota or billing credits."
         ].join("\n"),
@@ -180,7 +260,7 @@ const createInterviewReply = async (payload) => {
     throw new Error(detail);
   }
 
-  return { reply: extractResponseText(data) || localCoachReply({ message, role }), provider: "openai", model: openAiModel };
+  return { reply: extractResponseText(data) || localCoachReply(localContext), provider: "openai", model: openAiModel };
 };
 
 const serveStatic = async (req, res) => {
